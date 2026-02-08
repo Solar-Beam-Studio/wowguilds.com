@@ -15,5 +15,8 @@
     "turbo": "^2.5.0",
     "typescript": "^5.8.0"
   },
-  "packageManager": "bun@1.2.0"
+  "packageManager": "bun@1.2.0",
+  "dependencies": {
+    "date-fns": "^4.1.0"
+  }
 }

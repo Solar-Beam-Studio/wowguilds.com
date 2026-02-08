@@ -85,7 +85,7 @@ export function DataTable<T>({
 
   return (
     <div className="table-container">
-      <div className={`overflow-x-auto overflow-y-auto scrollbar-hide`} style={{ maxHeight }}>
+      <div className={`overflow-x-auto overflow-y-auto`} style={{ maxHeight }}>
         <table className="w-full">
           <thead className="sticky top-0 z-30">
             <tr className="bg-[var(--bg)]">

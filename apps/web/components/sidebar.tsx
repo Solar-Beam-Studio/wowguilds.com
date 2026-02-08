@@ -8,7 +8,7 @@ import { AppLogo } from "@/components/app-logo";
 import { Sun, Moon, Zap, LayoutGrid, LogOut, LogIn, UserPlus } from "lucide-react";
 import type { ReactNode } from "react";
 
-export function Sidebar({ children }: { children?: ReactNode }) {
+export function Sidebar() {
   const pathname = usePathname();
   const router = useRouter();
   const { data: session } = useSession();
@@ -50,11 +50,6 @@ export function Sidebar({ children }: { children?: ReactNode }) {
             {navLink("/", "Explore", <Zap className="w-4 h-4" />, pathname === "/")}
             {navLink("/guilds", "My Guilds", <LayoutGrid className="w-4 h-4" />, pathname.startsWith("/guilds"))}
           </section>
-
-          {/* Extra content (e.g. stats on home page) */}
-          <div className="flex flex-col gap-4">
-            {children}
-          </div>
         </div>
 
         {/* Footer */}

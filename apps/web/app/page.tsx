@@ -4,7 +4,7 @@ import { HomeClient } from "./home-client";
 export const revalidate = 60;
 
 export default async function HomePage() {
-  const [guilds, totalMembers, topCharacters, recentSync] = await Promise.all([
+  const [guilds, totalMembers, activeMembers, topCharacters, recentLogs] = await Promise.all([
     prisma.guild.findMany({
       orderBy: { updatedAt: "desc" },
       select: {
@@ -17,6 +17,13 @@ export default async function HomePage() {
       },
     }),
     prisma.guildMember.count(),
+    prisma.guildMember.count({
+      where: {
+        lastLoginTimestamp: {
+          gte: BigInt(Date.now() - 7 * 24 * 60 * 60 * 1000),
+        },
+      },
+    }),
     prisma.guildMember.findMany({
       where: { itemLevel: { not: null } },
       orderBy: { itemLevel: "desc" },
@@ -30,10 +37,14 @@ export default async function HomePage() {
         guild: { select: { name: true, id: true } },
       },
     }),
-    prisma.syncJob.findFirst({
-      where: { status: "completed" },
-      orderBy: { completedAt: "desc" },
-      select: { completedAt: true },
+    prisma.syncLog.findMany({
+      take: 5,
+      orderBy: { timestamp: "desc" },
+      include: {
+        guild: {
+          select: { name: true },
+        },
+      },
     }),
   ]);
 
@@ -41,8 +52,9 @@ export default async function HomePage() {
     <HomeClient
       guilds={guilds}
       totalMembers={totalMembers}
+      activeMembers={activeMembers}
       topCharacters={topCharacters}
-      lastSyncAt={recentSync?.completedAt?.toISOString() ?? null}
+      recentLogs={recentLogs}
     />
   );
 }

@@ -30,18 +30,6 @@ export function useGuilds() {
   });
 }
 
-export function useGuild(guildId: string) {
-  return useQuery<Guild>({
-    queryKey: ["guild", guildId],
-    queryFn: async () => {
-      const res = await fetch(`/api/guilds/${guildId}`);
-      if (!res.ok) throw new Error("Failed to fetch guild");
-      return res.json();
-    },
-    enabled: !!guildId,
-  });
-}
-
 export function useCreateGuild() {
   const queryClient = useQueryClient();
 
