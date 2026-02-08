@@ -7,9 +7,9 @@ echo "=== WoW Guilds - Deploy ==="
 echo "Building containers..."
 docker compose -f docker-compose.prod.yml build
 
-# Run database migrations inside a temporary container
-echo "Running database migrations..."
-docker compose -f docker-compose.prod.yml run --rm --no-deps -w /app/packages/database worker bunx prisma migrate deploy
+# Sync database schema
+echo "Syncing database schema..."
+docker compose -f docker-compose.prod.yml run --rm --no-deps -w /app/packages/database worker bunx prisma db push
 
 # Start services
 echo "Starting containers..."
