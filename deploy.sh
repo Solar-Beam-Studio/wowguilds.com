@@ -19,7 +19,7 @@ docker compose -f docker-compose.prod.yml up -d
 echo "Waiting for health check..."
 sleep 10
 
-if docker exec wowguilds-web wget -qO- http://localhost:3000/api/health > /dev/null 2>&1; then
+if docker exec wowguilds-web wget -qO- http://127.0.0.1:3000/api/health > /dev/null 2>&1; then
   echo "Health check passed!"
 else
   echo "WARNING: Health check failed"
