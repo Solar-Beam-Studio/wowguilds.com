@@ -32,6 +32,7 @@ services:
     env_file: .env
     environment:
       - NODE_ENV=production
+      - HOSTNAME=0.0.0.0
       - REDIS_HOST=wowguilds-redis
       - REDIS_PORT=6379
     depends_on:
