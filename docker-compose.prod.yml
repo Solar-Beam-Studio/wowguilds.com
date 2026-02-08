@@ -2,11 +2,12 @@ services:
   redis:
     image: redis:7-alpine
     container_name: wowguilds-redis
+    command: redis-server --requirepass ${REDIS_PASSWORD}
     volumes:
       - redis-data:/data
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
       interval: 10s
       timeout: 3s
       retries: 3
@@ -24,7 +25,6 @@ services:
       dockerfile: apps/web/Dockerfile
       args:
         - NEXT_PUBLIC_APP_URL=${NEXT_PUBLIC_APP_URL}
-        - BETTER_AUTH_SECRET=${BETTER_AUTH_SECRET}
     container_name: wowguilds-web
     hostname: wowguilds-web
     expose:
@@ -35,6 +35,7 @@ services:
       - HOSTNAME=0.0.0.0
       - REDIS_HOST=wowguilds-redis
       - REDIS_PORT=6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
     depends_on:
       redis:
         condition: service_healthy
@@ -63,6 +64,7 @@ services:
       - NODE_ENV=production
       - REDIS_HOST=wowguilds-redis
       - REDIS_PORT=6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
     depends_on:
       redis:
         condition: service_healthy

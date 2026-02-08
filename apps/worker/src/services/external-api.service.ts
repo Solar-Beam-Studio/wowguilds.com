@@ -41,6 +41,20 @@ interface RaidProgressionData {
   mythic_bosses_killed: number;
 }
 
+const VALID_REGIONS = ["us", "eu", "kr", "tw", "cn"];
+const BLIZZARD_HOST_RE = /^https:\/\/[a-z]{2}\.api\.blizzard\.com\//;
+
+function validateRegion(region: string): string {
+  const r = region.toLowerCase();
+  if (!VALID_REGIONS.includes(r)) throw new Error(`Invalid region: ${region}`);
+  return r;
+}
+
+function validateBlizzardUrl(url: string): string {
+  if (!BLIZZARD_HOST_RE.test(url)) throw new Error("Invalid Blizzard API URL");
+  return url;
+}
+
 export class ExternalApiService {
   constructor(private tokenService: BlizzardTokenService) {}
 
@@ -53,13 +67,14 @@ export class ExternalApiService {
     realm: string,
     region: string
   ): Promise<RosterMember[]> {
+    const r = validateRegion(region);
     const token = await this.tokenService.getToken();
     const normalizedGuild = encodeURIComponent(
       guildName.toLowerCase().replace(/\s+/g, "-")
     );
     const normalizedRealm = encodeURIComponent(realm.toLowerCase());
 
-    const url = `https://${region}.api.blizzard.com/data/wow/guild/${normalizedRealm}/${normalizedGuild}/roster?namespace=profile-${region}&locale=en_US`;
+    const url = `https://${r}.api.blizzard.com/data/wow/guild/${normalizedRealm}/${normalizedGuild}/roster?namespace=profile-${r}&locale=en_US`;
 
     const response = await fetch(url, {
       headers: { Authorization: `Bearer ${token}` },
@@ -130,7 +145,8 @@ export class ExternalApiService {
     realm: string,
     region: string
   ): Promise<CharacterData> {
-    const url = `https://raider.io/api/v1/characters/profile?region=${region}&realm=${realm}&name=${encodeURIComponent(name)}&fields=gear,mythic_plus_scores_by_season:current,raid_progression`;
+    const r = validateRegion(region);
+    const url = `https://raider.io/api/v1/characters/profile?region=${r}&realm=${encodeURIComponent(realm)}&name=${encodeURIComponent(name)}&fields=gear,mythic_plus_scores_by_season:current,raid_progression`;
 
     const response = await fetch(url);
     if (!response.ok) {
@@ -211,10 +227,11 @@ export class ExternalApiService {
     region: string,
     characterClass: string
   ) {
+    const r = validateRegion(region);
     const token = await this.tokenService.getToken();
     const normalizedRealm = encodeURIComponent(realm.toLowerCase());
     const normalizedName = encodeURIComponent(name.toLowerCase());
-    const baseUrl = `https://${region}.api.blizzard.com/profile/wow/character/${normalizedRealm}/${normalizedName}`;
+    const baseUrl = `https://${r}.api.blizzard.com/profile/wow/character/${normalizedRealm}/${normalizedName}`;
     const headers = { Authorization: `Bearer ${token}` };
 
     let achievementPoints = 0;
@@ -229,7 +246,7 @@ export class ExternalApiService {
     let currentSeasonId: number | null = null;
     try {
       const seasonRes = await fetch(
-        `https://${region}.api.blizzard.com/data/wow/pvp-season/index?namespace=dynamic-${region}&locale=en_US`,
+        `https://${r}.api.blizzard.com/data/wow/pvp-season/index?namespace=dynamic-${r}&locale=en_US`,
         { headers }
       );
       if (seasonRes.ok) {
@@ -245,7 +262,7 @@ export class ExternalApiService {
     // Achievements
     try {
       const achRes = await fetch(
-        `${baseUrl}/achievements?namespace=profile-${region}&locale=en_US`,
+        `${baseUrl}/achievements?namespace=profile-${r}&locale=en_US`,
         { headers }
       );
       if (achRes.ok) {
@@ -260,7 +277,7 @@ export class ExternalApiService {
     let activeSpec = "";
     try {
       const charRes = await fetch(
-        `${baseUrl}?namespace=profile-${region}&locale=en_US`,
+        `${baseUrl}?namespace=profile-${r}&locale=en_US`,
         { headers }
       );
       if (charRes.ok) {
@@ -287,7 +304,7 @@ export class ExternalApiService {
     for (const bracket of brackets) {
       try {
         const res = await fetch(
-          `${baseUrl}/pvp-bracket/${bracket.key}?namespace=profile-${region}&locale=en_US`,
+          `${baseUrl}/pvp-bracket/${bracket.key}?namespace=profile-${r}&locale=en_US`,
           { headers }
         );
         if (res.ok) {
@@ -307,7 +324,7 @@ export class ExternalApiService {
     // PvP Summary (Solo Shuffle + RBG Blitz)
     try {
       const summaryRes = await fetch(
-        `${baseUrl}/pvp-summary?namespace=profile-${region}&locale=en_US`,
+        `${baseUrl}/pvp-summary?namespace=profile-${r}&locale=en_US`,
         { headers }
       );
       if (summaryRes.ok) {
@@ -318,7 +335,7 @@ export class ExternalApiService {
 
         // Solo Shuffle
         const shuffleBrackets = allBrackets.filter((b) =>
-          b.href.includes("/pvp-bracket/shuffle-")
+          b.href.includes("/pvp-bracket/shuffle-") && BLIZZARD_HOST_RE.test(b.href)
         );
         for (const bracket of shuffleBrackets) {
           try {
@@ -347,7 +364,7 @@ export class ExternalApiService {
 
         // RBG Blitz
         const blitzBrackets = allBrackets.filter((b) =>
-          b.href.includes("/pvp-bracket/blitz-")
+          b.href.includes("/pvp-bracket/blitz-") && BLIZZARD_HOST_RE.test(b.href)
         );
         for (const bracket of blitzBrackets) {
           try {
@@ -396,16 +413,17 @@ export class ExternalApiService {
     region: string,
     characterApiUrl: string | null = null
   ): Promise<CharacterData> {
+    const r = validateRegion(region);
     const token = await this.tokenService.getToken();
     const headers = { Authorization: `Bearer ${token}` };
 
     let characterUrl: string;
-    if (characterApiUrl) {
+    if (characterApiUrl && BLIZZARD_HOST_RE.test(characterApiUrl)) {
       characterUrl = characterApiUrl + "&locale=en_US";
     } else {
       const normalizedRealm = encodeURIComponent(realm.toLowerCase());
       const normalizedName = encodeURIComponent(name.toLowerCase());
-      characterUrl = `https://${region}.api.blizzard.com/profile/wow/character/${normalizedRealm}/${normalizedName}?namespace=profile-${region}&locale=en_US`;
+      characterUrl = `https://${r}.api.blizzard.com/profile/wow/character/${normalizedRealm}/${normalizedName}?namespace=profile-${r}&locale=en_US`;
     }
 
     const charRes = await fetch(characterUrl, { headers });
@@ -455,10 +473,11 @@ export class ExternalApiService {
     region: string
   ): Promise<ActivityData> {
     try {
+      const r = validateRegion(region);
       const token = await this.tokenService.getToken();
       const normalizedRealm = encodeURIComponent(realm.toLowerCase());
       const normalizedName = encodeURIComponent(name.toLowerCase());
-      const url = `https://${region}.api.blizzard.com/profile/wow/character/${normalizedRealm}/${normalizedName}?namespace=profile-${region}&locale=en_US`;
+      const url = `https://${r}.api.blizzard.com/profile/wow/character/${normalizedRealm}/${normalizedName}?namespace=profile-${r}&locale=en_US`;
 
       const response = await fetch(url, {
         headers: { Authorization: `Bearer ${token}` },

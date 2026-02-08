@@ -18,6 +18,11 @@ export function createGuildDiscoveryWorker(
     QUEUE_NAMES.GUILD_DISCOVERY,
     async (job: Job<DiscoveryJobData>) => {
       const { guildId } = job.data;
+
+      if (!guildId || typeof guildId !== "string") {
+        throw new Error("Invalid job data: missing guildId");
+      }
+
       const startTime = Date.now();
 
       console.log(`[Discovery] Starting for guild ${guildId}`);
@@ -192,8 +197,8 @@ export function createGuildDiscoveryWorker(
         );
       } catch (error) {
         const duration = Math.round((Date.now() - startTime) / 1000);
-        const errorMsg =
-          error instanceof Error ? error.message : String(error);
+        const rawMsg = error instanceof Error ? error.message : String(error);
+        const errorMsg = rawMsg.replace(/Bearer\s+\S+/g, "Bearer [REDACTED]").slice(0, 500);
 
         await prisma.syncJob.update({
           where: { id: syncJob.id },

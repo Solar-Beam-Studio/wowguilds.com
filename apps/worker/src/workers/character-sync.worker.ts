@@ -29,6 +29,10 @@ export function createCharacterSyncWorker(
       const { guildId, characters, syncJobId, batchIndex, totalBatches } =
         job.data;
 
+      if (!guildId || !Array.isArray(characters) || !syncJobId) {
+        throw new Error("Invalid job data: missing required fields");
+      }
+
       console.log(
         `[CharSync] Batch ${batchIndex + 1}/${totalBatches} for guild ${guildId}: ${characters.length} characters`
       );
@@ -97,8 +101,9 @@ export function createCharacterSyncWorker(
           );
         } catch (error) {
           errorCount++;
-          const errorMsg =
-            error instanceof Error ? error.message : String(error);
+          const rawMsg = error instanceof Error ? error.message : String(error);
+          // Sanitize: strip tokens/URLs, truncate
+          const errorMsg = rawMsg.replace(/Bearer\s+\S+/g, "Bearer [REDACTED]").slice(0, 500);
 
           await prisma.syncError.create({
             data: {

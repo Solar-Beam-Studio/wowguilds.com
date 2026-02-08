@@ -50,15 +50,31 @@ export async function PATCH(
     }
 
     const body = await request.json();
-    const allowedFields = [
-      "syncEnabled",
-      "discoveryIntervalHours",
-      "activeSyncIntervalMin",
-      "activityWindowDays",
-    ];
     const updateData: Record<string, unknown> = {};
-    for (const field of allowedFields) {
-      if (field in body) updateData[field] = body[field];
+
+    if ("syncEnabled" in body) {
+      if (typeof body.syncEnabled !== "boolean") {
+        return NextResponse.json({ error: "syncEnabled must be a boolean" }, { status: 400 });
+      }
+      updateData.syncEnabled = body.syncEnabled;
+    }
+    if ("discoveryIntervalHours" in body) {
+      if (typeof body.discoveryIntervalHours !== "number" || body.discoveryIntervalHours < 1 || body.discoveryIntervalHours > 168) {
+        return NextResponse.json({ error: "discoveryIntervalHours must be 1-168" }, { status: 400 });
+      }
+      updateData.discoveryIntervalHours = body.discoveryIntervalHours;
+    }
+    if ("activeSyncIntervalMin" in body) {
+      if (typeof body.activeSyncIntervalMin !== "number" || body.activeSyncIntervalMin < 5 || body.activeSyncIntervalMin > 1440) {
+        return NextResponse.json({ error: "activeSyncIntervalMin must be 5-1440" }, { status: 400 });
+      }
+      updateData.activeSyncIntervalMin = body.activeSyncIntervalMin;
+    }
+    if ("activityWindowDays" in body) {
+      if (typeof body.activityWindowDays !== "number" || body.activityWindowDays < 1 || body.activityWindowDays > 365) {
+        return NextResponse.json({ error: "activityWindowDays must be 1-365" }, { status: 400 });
+      }
+      updateData.activityWindowDays = body.activityWindowDays;
     }
 
     const updated = await prisma.guild.update({

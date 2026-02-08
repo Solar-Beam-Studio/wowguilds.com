@@ -20,6 +20,10 @@ export function createActivityCheckWorker(
     async (job: Job<ActivityCheckJobData>) => {
       const { guildId, characters } = job.data;
 
+      if (!guildId || typeof guildId !== "string" || !Array.isArray(characters)) {
+        throw new Error("Invalid job data: missing required fields");
+      }
+
       console.log(
         `[ActivityCheck] Checking ${characters.length} characters for guild ${guildId}`
       );

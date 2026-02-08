@@ -14,6 +14,10 @@ export class BlizzardTokenService {
     return this.refreshToken();
   }
 
+  async invalidateToken(): Promise<void> {
+    await this.redis.del(TOKEN_KEY);
+  }
+
   private async refreshToken(): Promise<string> {
     // Acquire lock to prevent thundering herd
     const lockAcquired = await this.redis.set(

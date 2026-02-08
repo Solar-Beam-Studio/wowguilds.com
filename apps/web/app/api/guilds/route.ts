@@ -45,6 +45,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    if (typeof name !== "string" || typeof realm !== "string" || typeof region !== "string") {
+      return NextResponse.json({ error: "Invalid field types" }, { status: 400 });
+    }
+
+    if (name.length > 100 || realm.length > 100) {
+      return NextResponse.json({ error: "Name or realm too long" }, { status: 400 });
+    }
+
+    const validRegions = ["us", "eu", "kr", "tw", "cn"];
+    if (!validRegions.includes(region.toLowerCase())) {
+      return NextResponse.json({ error: "Invalid region" }, { status: 400 });
+    }
+
     const guild = await prisma.guild.create({
       data: {
         name,

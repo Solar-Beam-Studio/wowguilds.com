@@ -21,9 +21,9 @@ RUN cd packages/database && bunx prisma generate
 
 # Build Next.js
 ARG NEXT_PUBLIC_APP_URL=http://localhost:3000
-ARG BETTER_AUTH_SECRET=build-placeholder
 ENV NEXT_PUBLIC_APP_URL=$NEXT_PUBLIC_APP_URL
-ENV BETTER_AUTH_SECRET=$BETTER_AUTH_SECRET
+# BETTER_AUTH_SECRET: only needed at runtime, injected via env_file
+ENV BETTER_AUTH_SECRET=build-placeholder
 RUN cd apps/web && bun run build
 
 # Production

@@ -11,7 +11,8 @@ import { Zap } from "lucide-react";
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const redirect = searchParams.get("redirect") || "/";
+  const rawRedirect = searchParams.get("redirect") || "/";
+  const redirect = rawRedirect.startsWith("/") && !rawRedirect.startsWith("//") ? rawRedirect : "/";
   const t = useTranslations("login");
 
   const [email, setEmail] = useState("");
@@ -28,7 +29,7 @@ function LoginForm() {
     });
 
     if (error) {
-      toast.error(error.message || t("invalidCredentials"));
+      toast.error(t("invalidCredentials"));
       setLoading(false);
       return;
     }

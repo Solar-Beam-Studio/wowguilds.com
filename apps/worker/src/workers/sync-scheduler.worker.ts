@@ -23,6 +23,10 @@ export function createSyncSchedulerWorker(
     async (job: Job<SchedulerJobData>) => {
       const { guildId } = job.data;
 
+      if (!guildId || typeof guildId !== "string") {
+        throw new Error("Invalid job data: missing guildId");
+      }
+
       const guild = await prisma.guild.findUnique({ where: { id: guildId } });
       if (!guild || !guild.syncEnabled) return;
 
