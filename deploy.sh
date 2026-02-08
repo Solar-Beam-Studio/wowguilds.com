@@ -1,24 +1,25 @@
 #!/bin/bash
 set -e
 
-echo "=== WoW Guild Sync SaaS - Deploy ==="
+echo "=== WoW Guilds - Deploy ==="
 
-# Run database migrations
-echo "Running database migrations..."
-cd packages/database
-bunx prisma migrate deploy
-cd ../..
-
-# Build and restart containers
-echo "Building and starting containers..."
+# Build containers
+echo "Building containers..."
 docker compose -f docker-compose.prod.yml build
+
+# Run database migrations inside a temporary container
+echo "Running database migrations..."
+docker compose -f docker-compose.prod.yml run --rm --no-deps web bunx prisma migrate deploy
+
+# Start services
+echo "Starting containers..."
 docker compose -f docker-compose.prod.yml up -d
 
 # Wait for health check
 echo "Waiting for health check..."
 sleep 10
 
-if curl -sf http://localhost:3000/api/health > /dev/null 2>&1; then
+if docker exec wowguilds-web wget -qO- http://localhost:3000/api/health > /dev/null 2>&1; then
   echo "Health check passed!"
 else
   echo "WARNING: Health check failed"
