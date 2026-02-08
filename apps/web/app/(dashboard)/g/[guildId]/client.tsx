@@ -23,7 +23,7 @@ export function PublicGuildClient({
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search members..."
-          className="w-full h-10 pl-11 pr-4 bg-[var(--input)] border border-[var(--border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--text)]"
+          className="w-full h-10 pl-11 pr-4 bg-[var(--input)] border border-[var(--border)] rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[var(--text)] placeholder:text-[var(--text-secondary)]/50"
         />
       </div>
 

@@ -28,7 +28,7 @@ export default function NewGuildPage() {
       {
         onSuccess: (guild) => {
           toast.success(`Guild "${name}" added! Discovery starting...`);
-          router.push(`/guilds/${guild.id}`);
+          router.push(`/g/${guild.id}`);
         },
       }
     );
