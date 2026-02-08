@@ -9,7 +9,7 @@ docker compose -f docker-compose.prod.yml build
 
 # Run database migrations inside a temporary container
 echo "Running database migrations..."
-docker compose -f docker-compose.prod.yml run --rm --no-deps web bunx prisma migrate deploy
+docker compose -f docker-compose.prod.yml run --rm --no-deps -w /app/packages/database worker bunx prisma migrate deploy
 
 # Start services
 echo "Starting containers..."
