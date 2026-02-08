@@ -4,7 +4,7 @@ import { HomeClient } from "./home-client";
 export const revalidate = 60;
 
 export default async function HomePage() {
-  const [guilds, totalMembers, activeMembers, topCharacters, recentLogs] = await Promise.all([
+  const [guilds, totalMembers, activeMembers, topCharacters] = await Promise.all([
     prisma.guild.findMany({
       orderBy: { updatedAt: "desc" },
       select: {
@@ -37,15 +37,6 @@ export default async function HomePage() {
         guild: { select: { name: true, id: true } },
       },
     }),
-    prisma.syncLog.findMany({
-      take: 5,
-      orderBy: { timestamp: "desc" },
-      include: {
-        guild: {
-          select: { name: true },
-        },
-      },
-    }),
   ]);
 
   return (
@@ -54,7 +45,6 @@ export default async function HomePage() {
       totalMembers={totalMembers}
       activeMembers={activeMembers}
       topCharacters={topCharacters}
-      recentLogs={recentLogs}
     />
   );
 }

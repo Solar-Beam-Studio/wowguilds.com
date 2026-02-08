@@ -4,9 +4,8 @@ import { useState, useMemo } from "react";
 import Link from "next/link";
 import { Sidebar } from "@/components/sidebar";
 import { DataTable, type Column } from "@/components/data-table";
-import { Zap, Trophy, Activity, Users, ArrowRight, BarChart3, Globe2, Plus, Search, ShieldCheck, Timer } from "lucide-react";
+import { Activity, Users, ArrowRight, BarChart3, Plus, Search, ShieldCheck, Timer } from "lucide-react";
 import { CLASS_COLORS, getItemLevelColor, getMythicPlusColor } from "@wow/database/constants";
-import { formatDistanceToNow } from "date-fns";
 
 interface Guild {
   id: string;
@@ -26,25 +25,14 @@ interface TopCharacter {
   guild: { name: string; id: string };
 }
 
-interface SyncLog {
-  id: number;
-  guildId: string;
-  timestamp: Date;
-  status: string;
-  message: string | null;
-  characterName: string | null;
-  guild: { name: string };
-}
-
 interface HomeClientProps {
   guilds: Guild[];
   totalMembers: number;
   activeMembers: number;
   topCharacters: TopCharacter[];
-  recentLogs: SyncLog[];
 }
 
-export function HomeClient({ guilds, totalMembers, activeMembers, topCharacters, recentLogs }: HomeClientProps) {
+export function HomeClient({ guilds, totalMembers, activeMembers, topCharacters }: HomeClientProps) {
   const [search, setSearch] = useState("");
 
   const filteredGuilds = useMemo(() => {
@@ -167,7 +155,7 @@ export function HomeClient({ guilds, totalMembers, activeMembers, topCharacters,
                   <Link href="/signup" className="h-11 px-6 bg-white text-accent rounded-xl font-bold hover:bg-white/90 transition-all shadow-lg flex items-center gap-2">
                     Start Syncing <ArrowRight className="w-4 h-4" />
                   </Link>
-                  <Link href="/login" className="h-11 px-6 bg-white/10 text-white rounded-xl font-bold border border-white/20 hover:bg-white/20 transition-all backdrop-blur-md">
+                  <Link href="/login" className="h-11 px-6 bg-white/10 text-white rounded-xl font-bold border border-white/20 hover:bg-white/20 transition-all backdrop-blur-md flex items-center">
                     Member Login
                   </Link>
                 </div>
@@ -251,64 +239,21 @@ export function HomeClient({ guilds, totalMembers, activeMembers, topCharacters,
               </div>
             </div>
 
-            {/* Sidebar Data: Activity & Top Stats */}
-            <div className="space-y-8">
-              {/* Recent Activity Feed */}
-              <div>
-                <div className="flex items-center justify-between mb-4 px-2">
-                  <h2 className="text-[10px] font-display font-bold text-[var(--text-secondary)] uppercase tracking-[0.2em]">Recent Activity</h2>
-                  <div className="flex items-center gap-1">
-                    <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                    <span className="text-[10px] font-bold text-green-500 uppercase">Live</span>
-                  </div>
-                </div>
-                <div className="bg-[var(--bg-tertiary)] border border-[var(--border)] rounded-3xl overflow-hidden p-2 space-y-1">
-                  {recentLogs.map((log) => (
-                    <div key={log.id} className="p-3 bg-[var(--bg-secondary)] rounded-2xl border border-[var(--border)]/50">
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="text-[10px] font-bold text-accent uppercase tracking-wider">{log.guild.name}</span>
-                        <span className="text-[9px] text-[var(--text-secondary)] font-medium">
-                          {formatDistanceToNow(new Date(log.timestamp), { addSuffix: true })}
-                        </span>
-                      </div>
-                      <p className="text-xs font-medium text-[var(--text-secondary)] leading-snug">
-                        {log.message || `Synced character ${log.characterName}`}
-                      </p>
-                    </div>
-                  ))}
-                </div>
+            {/* Top Performers */}
+            <div>
+              <div className="flex items-center justify-between mb-4 px-2">
+                <h2 className="text-[10px] font-display font-bold text-[var(--text-secondary)] uppercase tracking-[0.2em]">Top Ranks</h2>
               </div>
-
-              {/* Mini Top Performers */}
-              <div>
-                <div className="flex items-center justify-between mb-4 px-2">
-                  <h2 className="text-[10px] font-display font-bold text-[var(--text-secondary)] uppercase tracking-[0.2em]">Top Ranks</h2>
-                </div>
-                <div className="bg-[var(--bg-secondary)] border border-[var(--border)] rounded-3xl overflow-hidden shadow-sm">
-                  <DataTable
-                    columns={topCharacterColumns}
-                    data={filteredCharacters.slice(0, 5)}
-                    rowKey={(c) => `${c.characterName}-${c.realm}`}
-                    defaultSortKey="itemLevel"
-                    defaultSortDirection="desc"
-                    maxHeight="none"
-                  />
-                </div>
+              <div className="bg-[var(--bg-secondary)] border border-[var(--border)] rounded-3xl overflow-hidden shadow-sm">
+                <DataTable
+                  columns={topCharacterColumns}
+                  data={filteredCharacters.slice(0, 5)}
+                  rowKey={(c) => `${c.characterName}-${c.realm}`}
+                  defaultSortKey="itemLevel"
+                  defaultSortDirection="desc"
+                  maxHeight="none"
+                />
               </div>
-            </div>
-          </div>
-
-          {/* Footer CTA */}
-          <div className="mt-12 py-12 border-t border-[var(--border)] flex flex-col md:flex-row items-center justify-between gap-6 opacity-40 hover:opacity-100 transition-opacity">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-accent flex items-center justify-center text-white">
-                <Zap className="w-4 h-4 fill-current" />
-              </div>
-              <span className="text-xs font-bold tracking-[0.2em] uppercase">WoW Guild Sync</span>
-            </div>
-            <div className="flex items-center gap-8 text-[10px] font-bold uppercase tracking-[0.1em]">
-              <span>© 2026 Solar Beam</span>
-              <a href="https://raider.io" target="_blank" rel="noopener noreferrer" className="hover:text-accent transition-colors">Data by Raider.IO & Blizzard</a>
             </div>
           </div>
         </div>
