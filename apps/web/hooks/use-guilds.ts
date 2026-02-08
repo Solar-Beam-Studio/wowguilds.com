@@ -59,45 +59,6 @@ export function useCreateGuild() {
   });
 }
 
-export function useToggleSync() {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: async ({
-      guildId,
-      syncEnabled,
-    }: {
-      guildId: string;
-      syncEnabled: boolean;
-    }) => {
-      const res = await fetch(`/api/guilds/${guildId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ syncEnabled }),
-      });
-      if (!res.ok) throw new Error("Failed to toggle sync");
-      return res.json();
-    },
-    onMutate: async ({ guildId, syncEnabled }) => {
-      await queryClient.cancelQueries({ queryKey: ["guilds"] });
-      const previous = queryClient.getQueryData<Guild[]>(["guilds"]);
-      queryClient.setQueryData<Guild[]>(["guilds"], (old) =>
-        old?.map((g) => (g.id === guildId ? { ...g, syncEnabled } : g))
-      );
-      return { previous };
-    },
-    onError: (error: Error, _vars, context) => {
-      if (context?.previous) {
-        queryClient.setQueryData(["guilds"], context.previous);
-      }
-      toast.error(error.message);
-    },
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["guilds"] });
-    },
-  });
-}
-
 export function useDeleteGuild() {
   const queryClient = useQueryClient();
 

@@ -307,7 +307,7 @@ export function HomeClient({ guilds, totalMembers, activeMembers, topCharacters,
               <span className="text-xs font-bold tracking-[0.2em] uppercase">WoW Guild Sync</span>
             </div>
             <div className="flex items-center gap-8 text-[10px] font-bold uppercase tracking-[0.1em]">
-              <span>© 2025 Solar Beam</span>
+              <span>© 2026 Solar Beam</span>
               <a href="https://raider.io" target="_blank" rel="noopener noreferrer" className="hover:text-accent transition-colors">Data by Raider.IO & Blizzard</a>
             </div>
           </div>
