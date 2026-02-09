@@ -1,0 +1,57 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: root
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script_stop: true
+          script: |
+            cd /root/wowguilds
+            git pull origin main
+            ./deploy.sh
+
+      - name: Discord - Success
+        if: success() && vars.DISCORD_WEBHOOK != ''
+        env:
+          DISCORD_WEBHOOK: ${{ vars.DISCORD_WEBHOOK }}
+          COMMIT_SHA: ${{ github.sha }}
+        run: |
+          curl -s -H "Content-Type: application/json" -X POST "$DISCORD_WEBHOOK" -d '{
+            "embeds": [{
+              "title": "WoW Guilds deployed",
+              "description": "Commit `'"$COMMIT_SHA"'` deployed successfully.",
+              "color": 5025616,
+              "timestamp": "'$(date -u +%Y-%m-%dT%H:%M:%SZ)'"
+            }]
+          }'
+
+      - name: Discord - Failure
+        if: failure() && vars.DISCORD_WEBHOOK != ''
+        env:
+          DISCORD_WEBHOOK: ${{ vars.DISCORD_WEBHOOK }}
+          COMMIT_SHA: ${{ github.sha }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          curl -s -H "Content-Type: application/json" -X POST "$DISCORD_WEBHOOK" -d '{
+            "embeds": [{
+              "title": "WoW Guilds deploy FAILED",
+              "description": "Commit `'"$COMMIT_SHA"'` failed to deploy.\n[View logs]('"$RUN_URL"')",
+              "color": 15548997,
+              "timestamp": "'$(date -u +%Y-%m-%dT%H:%M:%SZ)'"
+            }]
+          }'
