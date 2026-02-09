@@ -84,7 +84,9 @@
   "guildDetail": {
     "members": "members",
     "searchPlaceholder": "Search members...",
-    "notFound": "Guild Not Found"
+    "notFound": "Guild Not Found",
+    "tabLeaderboard": "Leaderboard",
+    "tabRoster": "Roster"
   },
   "table": {
     "character": "Character",
