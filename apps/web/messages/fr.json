@@ -84,7 +84,9 @@
   "guildDetail": {
     "members": "membres",
     "searchPlaceholder": "Rechercher des membres...",
-    "notFound": "Guilde Introuvable"
+    "notFound": "Guilde Introuvable",
+    "tabLeaderboard": "Classement",
+    "tabRoster": "Effectif"
   },
   "table": {
     "character": "Personnage",

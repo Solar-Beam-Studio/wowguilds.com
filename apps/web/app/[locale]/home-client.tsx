@@ -4,9 +4,9 @@ import { useState, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { Sidebar } from "@/components/sidebar";
-import { DataTable, type Column } from "@/components/data-table";
+import { LeaderboardGrid } from "@/components/leaderboard-grid";
 import { Activity, Users, ArrowRight, Plus, Search, ShieldCheck, Timer } from "lucide-react";
-import { CLASS_COLORS, getItemLevelColor, getMythicPlusColor } from "@wow/database/constants";
+import type { LeaderboardCategory } from "@/lib/leaderboard";
 
 interface Guild {
   id: string;
@@ -17,26 +17,16 @@ interface Guild {
   lastActiveSyncAt: Date | null;
 }
 
-interface TopCharacter {
-  characterName: string;
-  realm: string;
-  characterClass: string | null;
-  itemLevel: number | null;
-  mythicPlusScore: number | null;
-  guild: { name: string; id: string };
-}
-
 interface HomeClientProps {
   guilds: Guild[];
   totalMembers: number;
   activeMembers: number;
-  topCharacters: TopCharacter[];
+  leaderboardCategories: LeaderboardCategory[];
 }
 
-export function HomeClient({ guilds, totalMembers, activeMembers, topCharacters }: HomeClientProps) {
+export function HomeClient({ guilds, totalMembers, activeMembers, leaderboardCategories }: HomeClientProps) {
   const [search, setSearch] = useState("");
   const t = useTranslations("home");
-  const tt = useTranslations("table");
 
   const filteredGuilds = useMemo(() => {
     if (!search) return guilds;
@@ -48,73 +38,6 @@ export function HomeClient({ guilds, totalMembers, activeMembers, topCharacters 
         g.region.toLowerCase().includes(q)
     );
   }, [guilds, search]);
-
-  const filteredCharacters = useMemo(() => {
-    if (!search) return topCharacters;
-    const q = search.toLowerCase();
-    return topCharacters.filter(
-      (c) =>
-        c.characterName.toLowerCase().includes(q) ||
-        c.realm.toLowerCase().includes(q) ||
-        c.characterClass?.toLowerCase().includes(q) ||
-        c.guild.name.toLowerCase().includes(q)
-    );
-  }, [topCharacters, search]);
-
-  const topCharacterColumns: Column<TopCharacter>[] = [
-    {
-      key: "characterName",
-      label: tt("character"),
-      sortValue: (c) => c.characterName.toLowerCase(),
-      render: (c) => (
-        <>
-          <span
-            className="text-sm font-bold"
-            style={{ color: (c.characterClass && CLASS_COLORS[c.characterClass]) || undefined }}
-          >
-            {c.characterName}
-          </span>
-          <span className="text-[10px] font-bold text-[var(--text-secondary)] opacity-50 ml-2">{c.realm}</span>
-        </>
-      ),
-    },
-    {
-      key: "guild",
-      label: tt("guild"),
-      render: (c) => (
-        <Link
-          href={`/g/${c.guild.id}`}
-          className="text-xs text-[var(--text-secondary)] hover:text-accent font-bold transition-colors"
-        >
-          {c.guild.name}
-        </Link>
-      ),
-    },
-    {
-      key: "itemLevel",
-      label: tt("itemLevel"),
-      align: "right",
-      sortValue: (c) => c.itemLevel ?? 0,
-      render: (c) =>
-        c.itemLevel ? (
-          <span className="font-mono font-bold" style={{ color: getItemLevelColor(c.itemLevel) }}>
-            {Math.round(c.itemLevel)}
-          </span>
-        ) : <span>-</span>,
-    },
-    {
-      key: "mythicPlusScore",
-      label: tt("mythicPlus"),
-      align: "right",
-      sortValue: (c) => c.mythicPlusScore ?? 0,
-      render: (c) =>
-        c.mythicPlusScore ? (
-          <span className="font-mono font-bold" style={{ color: getMythicPlusColor(c.mythicPlusScore) }}>
-            {Math.round(c.mythicPlusScore)}
-          </span>
-        ) : <span>-</span>,
-    },
-  ];
 
   return (
     <div className="min-h-screen bg-[var(--bg)] p-1.5 flex flex-col md:flex-row gap-1.5 overflow-hidden max-h-screen">
@@ -197,64 +120,53 @@ export function HomeClient({ guilds, totalMembers, activeMembers, topCharacters 
             </div>
           </div>
 
-          <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
-            {/* Guilds List - 2/3 width on XL */}
-            <div className="xl:col-span-2 space-y-6">
-              <div className="flex items-center justify-between px-2">
-                <h2 className="text-[10px] font-display font-bold text-[var(--text-secondary)] uppercase tracking-[0.2em]">{t("connectedGuilds")}</h2>
-                <Link href="/guilds/new" className="text-xs font-bold text-accent hover:underline flex items-center gap-1">
-                  <Plus className="w-3 h-3" /> {t("addYourGuild")}
-                </Link>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {filteredGuilds.length === 0 ? (
-                  <div className="md:col-span-2 bg-[var(--bg-tertiary)] rounded-2xl p-12 text-center border-2 border-dashed border-[var(--border)]">
-                    <p className="text-sm text-[var(--text-secondary)] font-medium">{search ? t("noGuildsMatch") : t("noGuildsYet")}</p>
-                  </div>
-                ) : (
-                  filteredGuilds.slice(0, 10).map((guild) => (
-                    <Link
-                      key={guild.id}
-                      href={`/g/${guild.id}`}
-                      className="flex items-center justify-between p-4 hover:bg-[var(--bg-tertiary)] bg-[var(--bg-secondary)] border border-[var(--border)] transition-all rounded-2xl group hover:shadow-lg hover:-translate-y-0.5"
-                    >
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 rounded-2xl bg-[var(--bg-tertiary)] flex items-center justify-center text-accent font-black text-lg border border-[var(--border)] group-hover:bg-accent group-hover:text-white transition-colors">
-                          {guild.name[0]}
-                        </div>
-                        <div>
-                          <h3 className="font-display font-bold leading-tight group-hover:text-accent transition-colors">{guild.name}</h3>
-                          <p className="text-[10px] text-[var(--text-secondary)] font-bold uppercase tracking-wider mt-1">
-                            {guild.realm} — {guild.region.toUpperCase()}
-                          </p>
-                        </div>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-xs font-bold">{guild.memberCount}</p>
-                        <p className="text-[10px] text-[var(--text-secondary)] font-bold uppercase opacity-50">{t("members")}</p>
-                      </div>
-                    </Link>
-                  ))
-                )}
-              </div>
+          {/* Guilds List */}
+          <div className="space-y-6">
+            <div className="flex items-center justify-between px-2">
+              <h2 className="text-[10px] font-display font-bold text-[var(--text-secondary)] uppercase tracking-[0.2em]">{t("connectedGuilds")}</h2>
+              <Link href="/guilds/new" className="text-xs font-bold text-accent hover:underline flex items-center gap-1">
+                <Plus className="w-3 h-3" /> {t("addYourGuild")}
+              </Link>
             </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+              {filteredGuilds.length === 0 ? (
+                <div className="md:col-span-2 xl:col-span-3 bg-[var(--bg-tertiary)] rounded-2xl p-12 text-center border-2 border-dashed border-[var(--border)]">
+                  <p className="text-sm text-[var(--text-secondary)] font-medium">{search ? t("noGuildsMatch") : t("noGuildsYet")}</p>
+                </div>
+              ) : (
+                filteredGuilds.slice(0, 12).map((guild) => (
+                  <Link
+                    key={guild.id}
+                    href={`/g/${guild.id}`}
+                    className="flex items-center justify-between p-4 hover:bg-[var(--bg-tertiary)] bg-[var(--bg-secondary)] border border-[var(--border)] transition-all rounded-2xl group hover:shadow-lg hover:-translate-y-0.5"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-2xl bg-[var(--bg-tertiary)] flex items-center justify-center text-accent font-black text-lg border border-[var(--border)] group-hover:bg-accent group-hover:text-white transition-colors">
+                        {guild.name[0]}
+                      </div>
+                      <div>
+                        <h3 className="font-display font-bold leading-tight group-hover:text-accent transition-colors">{guild.name}</h3>
+                        <p className="text-[10px] text-[var(--text-secondary)] font-bold uppercase tracking-wider mt-1">
+                          {guild.realm} — {guild.region.toUpperCase()}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <p className="text-xs font-bold">{guild.memberCount}</p>
+                      <p className="text-[10px] text-[var(--text-secondary)] font-bold uppercase opacity-50">{t("members")}</p>
+                    </div>
+                  </Link>
+                ))
+              )}
+            </div>
+          </div>
 
-            {/* Top Performers */}
-            <div>
-              <div className="flex items-center justify-between mb-4 px-2">
-                <h2 className="text-[10px] font-display font-bold text-[var(--text-secondary)] uppercase tracking-[0.2em]">{t("topRanks")}</h2>
-              </div>
-              <div className="bg-[var(--bg-secondary)] border border-[var(--border)] rounded-3xl overflow-hidden shadow-sm">
-                <DataTable
-                  columns={topCharacterColumns}
-                  data={filteredCharacters.slice(0, 5)}
-                  rowKey={(c) => `${c.characterName}-${c.realm}`}
-                  defaultSortKey="itemLevel"
-                  defaultSortDirection="desc"
-                  maxHeight="none"
-                />
-              </div>
+          {/* Global Leaderboard */}
+          <div className="space-y-6">
+            <div className="px-2">
+              <h2 className="text-[10px] font-display font-bold text-[var(--text-secondary)] uppercase tracking-[0.2em]">{t("topRanks")}</h2>
             </div>
+            <LeaderboardGrid categories={leaderboardCategories} showGuild />
           </div>
         </div>
       </main>
