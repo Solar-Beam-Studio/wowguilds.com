@@ -1,12 +1,19 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { Search } from "lucide-react";
 import { MemberTable } from "@/components/member-table";
 import { LeaderboardGrid } from "@/components/leaderboard-grid";
 import { buildCategories } from "@/lib/leaderboard";
 import type { GuildMember } from "@/hooks/use-members";
+
+type Tab = "leaderboard" | "roster";
+
+function getTabFromHash(): Tab {
+  if (typeof window === "undefined") return "leaderboard";
+  return window.location.hash === "#roster" ? "roster" : "leaderboard";
+}
 
 export function PublicGuildClient({
   members,
@@ -15,10 +22,23 @@ export function PublicGuildClient({
   members: GuildMember[];
   region: string;
 }) {
-  const [tab, setTab] = useState<"leaderboard" | "roster">("leaderboard");
+  const [tab, setTab] = useState<Tab>("leaderboard");
   const [search, setSearch] = useState("");
   const t = useTranslations("guildDetail");
   const locale = useLocale();
+
+  // Sync tab with URL hash
+  useEffect(() => {
+    setTab(getTabFromHash());
+    const onHashChange = () => setTab(getTabFromHash());
+    window.addEventListener("hashchange", onHashChange);
+    return () => window.removeEventListener("hashchange", onHashChange);
+  }, []);
+
+  function switchTab(newTab: Tab) {
+    setTab(newTab);
+    window.history.replaceState(null, "", newTab === "leaderboard" ? " " : "#roster");
+  }
 
   const categories = useMemo(
     () => buildCategories(members, locale),
@@ -30,7 +50,7 @@ export function PublicGuildClient({
       {/* Tabs */}
       <div className="flex gap-10 border-b border-white/5 mb-8">
         <button
-          onClick={() => setTab("leaderboard")}
+          onClick={() => switchTab("leaderboard")}
           className={`pb-4 text-sm uppercase transition-colors ${
             tab === "leaderboard"
               ? "font-black tracking-[0.2em] border-b-2 border-violet-500 text-white"
@@ -40,7 +60,7 @@ export function PublicGuildClient({
           {t("tabLeaderboard")}
         </button>
         <button
-          onClick={() => setTab("roster")}
+          onClick={() => switchTab("roster")}
           className={`pb-4 text-sm uppercase transition-colors ${
             tab === "roster"
               ? "font-black tracking-[0.2em] border-b-2 border-violet-500 text-white"
