@@ -52,6 +52,7 @@ export default async function HomePage({
     guilds,
     totalMembers,
     activeMembers,
+    recentSyncJobs,
     topIlvl,
     topMplus,
     topAchievements,
@@ -79,6 +80,20 @@ export default async function HomePage({
         lastLoginTimestamp: {
           gte: BigInt(Date.now() - 7 * 24 * 60 * 60 * 1000),
         },
+      },
+    }),
+    prisma.syncJob.findMany({
+      where: { status: "completed" },
+      orderBy: { completedAt: "desc" },
+      take: 15,
+      select: {
+        id: true,
+        type: true,
+        totalItems: true,
+        processedItems: true,
+        completedAt: true,
+        duration: true,
+        guild: { select: { name: true, id: true, realm: true, region: true } },
       },
     }),
     prisma.guildMember.findMany({
@@ -226,12 +241,26 @@ export default async function HomePage({
     },
   ];
 
+  const recentActivity = recentSyncJobs.map((job) => ({
+    id: job.id,
+    type: job.type,
+    totalItems: job.totalItems,
+    processedItems: job.processedItems,
+    completedAt: job.completedAt?.toISOString() ?? null,
+    duration: job.duration,
+    guildName: job.guild.name,
+    guildId: job.guild.id,
+    guildRealm: job.guild.realm,
+    guildRegion: job.guild.region,
+  }));
+
   return (
     <HomeClient
       guilds={guilds}
       totalMembers={totalMembers}
       activeMembers={activeMembers}
       leaderboardCategories={leaderboardCategories}
+      recentActivity={recentActivity}
     />
   );
 }

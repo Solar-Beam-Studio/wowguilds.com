@@ -1,36 +1,41 @@
 {
   "meta": {
-    "title": "WoW Guilds",
-    "description": "Synchronisation en temps réel des membres de guilde World of Warcraft"
+    "title": "WoW Guilds — Inspecteur de Roster",
+    "description": "Cherchez n'importe quelle guilde WoW. Voir l'stuff, le score M+, les cotes PvP, la progression raid et l'activite de chaque membre — en un tableau."
   },
   "home": {
-    "heading": "Réseau Global",
-    "subtitle": "Synchronisation en temps réel de {guildCount} guildes et {memberCount} personnages.",
+    "heading": "Recherche de Guilde",
+    "tagline": "Chaque membre. Chaque stat. Un seul tableau.",
+    "subtitle": "Cherchez n'importe quelle guilde et voyez instantanement les niveaux d'objet, scores M+, cotes PvP, progression raid, et qui a arrete de jouer.",
     "searchPlaceholder": "Rechercher guildes, personnages ou royaumes...",
     "liveDataStream": "Flux en Direct",
     "heroTitle": "Le Moteur de Sync pour les Guildes Modernes.",
-    "heroDescription": "Suivi automatisé des performances, gestion du roster et statistiques d'activité pour les guildes World of Warcraft.",
+    "heroDescription": "Suivi automatise des performances, gestion du roster et statistiques d'activite pour les guildes World of Warcraft.",
     "startSyncing": "Commencer",
     "memberLogin": "Connexion Membre",
-    "activePlayers": "Joueurs Actifs",
-    "verifiedGuilds": "Guildes Vérifiées",
+    "activePlayers": "actifs cette semaine",
+    "verifiedGuilds": "guildes",
+    "characters": "personnages",
     "liveSyncs": "Syncs en Direct",
-    "connectedGuilds": "Guildes Connectées",
+    "connectedGuilds": "Guildes Connectees",
     "addYourGuild": "Ajouter votre Guilde",
-    "noGuildsMatch": "Aucune guilde ne correspond à votre recherche.",
-    "noGuildsYet": "Aucune guilde suivie pour le moment.",
-    "members": "Membres",
+    "noGuildsMatch": "Aucune guilde ne correspond a votre recherche.",
+    "noGuildsYet": "Cherchez une guilde ci-dessus pour commencer.",
+    "members": "membres",
     "topRanks": "Meilleurs Classements",
     "guildNamePlaceholder": "Nom de la Guilde",
     "realmPlaceholder": "Royaume",
     "searchButton": "Rechercher",
-    "recentGuilds": "Récemment Synchronisées",
-    "trackingStats": "{guilds} guildes · {members} personnages suivis"
+    "recentGuilds": "Recherchees Recemment",
+    "trackingStats": "{guilds} guildes · {members} personnages suivis",
+    "valueProp1": "Vue complete du roster",
+    "valueProp2": "Detection d'activite",
+    "valueProp3": "Aucun compte requis"
   },
   "login": {
     "brandName": "WoW Guilds",
     "heading": "Bon Retour.",
-    "subtitle": "Continuez à gérer votre réseau de guildes.",
+    "subtitle": "Continuez a gerer votre reseau de guildes.",
     "emailLabel": "Adresse Email",
     "emailPlaceholder": "nom@exemple.com",
     "passwordLabel": "Mot de passe",
@@ -38,36 +43,36 @@
     "submitLoading": "Connexion en cours...",
     "submit": "Se Connecter",
     "noAccount": "Pas encore de compte ?",
-    "signUpLink": "Créer un compte gratuitement",
+    "signUpLink": "Creer un compte gratuitement",
     "invalidCredentials": "Identifiants invalides"
   },
   "signup": {
     "brandName": "WoW Guilds",
-    "heading": "Créer un Compte.",
-    "subtitle": "Commencez à suivre votre guilde en quelques secondes.",
+    "heading": "Creer un Compte.",
+    "subtitle": "Commencez a suivre votre guilde en quelques secondes.",
     "nameLabel": "Nom Complet",
-    "namePlaceholder": "Héros d'Azeroth",
+    "namePlaceholder": "Heros d'Azeroth",
     "emailLabel": "Adresse Email",
     "emailPlaceholder": "nom@exemple.com",
     "passwordLabel": "Mot de passe",
     "passwordPlaceholder": "••••••••",
-    "passwordHint": "8 caractères minimum.",
-    "submitLoading": "Création du compte...",
-    "submit": "Créer un Compte Gratuit",
-    "hasAccount": "Vous avez déjà un compte ?",
+    "passwordHint": "8 caracteres minimum.",
+    "submitLoading": "Creation du compte...",
+    "submit": "Creer un Compte Gratuit",
+    "hasAccount": "Vous avez deja un compte ?",
     "signInLink": "Se connecter",
-    "signupFailed": "Échec de l'inscription"
+    "signupFailed": "Echec de l'inscription"
   },
   "guilds": {
     "heading": "Mes Guildes",
-    "subtitle": "Vos guildes World of Warcraft connectées.",
+    "subtitle": "Vos guildes World of Warcraft connectees.",
     "addGuild": "Ajouter une Guilde",
-    "noGuildsTitle": "Aucune Guilde Connectée",
-    "noGuildsDescription": "Ajoutez votre première guilde pour synchroniser les données depuis Blizzard et Raider.IO.",
-    "addFirstGuild": "Ajouter votre Première Guilde",
+    "noGuildsTitle": "Aucune Guilde Connectee",
+    "noGuildsDescription": "Ajoutez votre premiere guilde pour synchroniser les donnees depuis Blizzard et Raider.IO.",
+    "addFirstGuild": "Ajouter votre Premiere Guilde",
     "viewRoster": "Voir le Roster",
     "deleteGuild": "Supprimer la Guilde",
-    "deleteConfirm": "Supprimer « {name} » ? Cette action est irréversible.",
+    "deleteConfirm": "Supprimer \u00ab {name} \u00bb ? Cette action est irreversible.",
     "members": "membres"
   },
   "newGuild": {
@@ -77,14 +82,14 @@
     "realmLabel": "Royaume",
     "realmPlaceholder": "archimonde",
     "realmHint": "Utilisez le slug du royaume (minuscules, tirets au lieu des espaces)",
-    "regionLabel": "Région",
+    "regionLabel": "Region",
     "regionEurope": "Europe",
-    "regionAmericas": "Amériques",
-    "regionKorea": "Corée",
-    "regionTaiwan": "Taïwan",
+    "regionAmericas": "Ameriques",
+    "regionKorea": "Coree",
+    "regionTaiwan": "Taiwan",
     "submitLoading": "Ajout de la guilde...",
     "submit": "Ajouter la Guilde",
-    "successToast": "Guilde « {name} » ajoutée ! Découverte en cours..."
+    "successToast": "Guilde \u00ab {name} \u00bb ajoutee ! Decouverte en cours..."
   },
   "guildDetail": {
     "members": "membres",
@@ -107,8 +112,8 @@
     "pvpRbg": "RBG",
     "pvpSolo": "Solo",
     "pvpBlitz": "Blitz",
-    "updated": "Mis à jour",
-    "noResults": "Aucun membre de guilde ne correspond à votre recherche."
+    "updated": "Mis a jour",
+    "noResults": "Aucun membre de guilde ne correspond a votre recherche."
   },
   "hallOfFame": {
     "title": "Hall of Fame",
@@ -118,8 +123,8 @@
     "mythicPlus": "Roi du M+",
     "raids": "Roi des Raids",
     "achievements": "Roi des Hauts Faits",
-    "pvp2v2": "Arène 2v2",
-    "pvp3v3": "Arène 3v3",
+    "pvp2v2": "Arene 2v2",
+    "pvp3v3": "Arene 3v3",
     "pvpSolo": "Solo Shuffle",
     "pvpRbg": "RBG",
     "pvpBlitz": "Blitz"
@@ -130,7 +135,7 @@
     "myGuilds": "Mes Guildes",
     "getStarted": "Commencer",
     "signIn": "Se Connecter",
-    "signOut": "Se Déconnecter",
-    "toggleTheme": "Changer le Thème"
+    "signOut": "Se Deconnecter",
+    "toggleTheme": "Changer le Theme"
   }
 }

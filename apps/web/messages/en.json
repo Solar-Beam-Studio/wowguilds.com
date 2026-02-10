@@ -1,31 +1,36 @@
 {
   "meta": {
-    "title": "WoW Guilds",
-    "description": "Real-time World of Warcraft guild member synchronization"
+    "title": "WoW Guilds — Guild Roster Inspector",
+    "description": "Look up any WoW guild. See every member's gear, M+ score, PvP rating, raid progress, and activity — in one table."
   },
   "home": {
-    "heading": "Global Network",
-    "subtitle": "Real-time sync across {guildCount} guilds and {memberCount} characters.",
+    "heading": "Guild Lookup",
+    "tagline": "Every member. Every stat. One table.",
+    "subtitle": "Look up any guild and instantly see item levels, M+ scores, PvP ratings, raid progress, and who stopped logging in.",
     "searchPlaceholder": "Search guilds, characters or realms...",
     "liveDataStream": "Live Data Stream",
     "heroTitle": "The Sync Engine for Modern Guilds.",
     "heroDescription": "Automated performance tracking, roster management, and activity insights for World of Warcraft guilds.",
     "startSyncing": "Start Syncing",
     "memberLogin": "Member Login",
-    "activePlayers": "Active Players",
-    "verifiedGuilds": "Verified Guilds",
+    "activePlayers": "active this week",
+    "verifiedGuilds": "guilds",
+    "characters": "characters",
     "liveSyncs": "Live Syncs",
     "connectedGuilds": "Connected Guilds",
     "addYourGuild": "Add Your Guild",
     "noGuildsMatch": "No guilds match your search.",
-    "noGuildsYet": "No guilds tracked yet.",
-    "members": "Members",
+    "noGuildsYet": "Search for a guild above to get started.",
+    "members": "members",
     "topRanks": "Top Ranks",
     "guildNamePlaceholder": "Guild Name",
     "realmPlaceholder": "Realm",
-    "searchButton": "Search",
-    "recentGuilds": "Recently Synced",
-    "trackingStats": "{guilds} guilds · {members} characters tracked"
+    "searchButton": "Look Up",
+    "recentGuilds": "Recently Looked Up",
+    "trackingStats": "{guilds} guilds · {members} characters tracked",
+    "valueProp1": "Full roster overview",
+    "valueProp2": "Activity detection",
+    "valueProp3": "No account needed"
   },
   "login": {
     "brandName": "WoW Guilds",

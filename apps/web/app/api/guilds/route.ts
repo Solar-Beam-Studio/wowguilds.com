@@ -5,6 +5,7 @@ import {
   enqueueImmediateDiscovery,
   registerGuildSchedules,
 } from "@/lib/queue";
+import { validateGuildExists } from "@/lib/blizzard";
 
 // In-memory rate limit: 10 req/min per IP
 const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
@@ -90,6 +91,15 @@ export async function POST(request: NextRequest) {
 
     if (existing) {
       return NextResponse.json(existing);
+    }
+
+    // Validate guild exists on Blizzard before creating
+    const exists = await validateGuildExists(name, normalizedRealm, normalizedRegion);
+    if (!exists) {
+      return NextResponse.json(
+        { error: "Guild not found on Blizzard. Check the name, realm, and region." },
+        { status: 404 }
+      );
     }
 
     // Create new guild (no userId — public lookup)
