@@ -1,6 +1,11 @@
+"use client";
+
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 
 export function Footer() {
+  const t = useTranslations("footer");
+
   return (
     <footer className="relative z-10 border-t border-white/5 mt-auto">
       <div className="max-w-7xl mx-auto px-8 py-10 flex flex-col md:flex-row items-center justify-between gap-6">
@@ -9,7 +14,7 @@ export function Footer() {
             WOW<span className="text-violet-500">GUILDS</span>.COM
           </Link>
           <span className="text-[10px] text-gray-600">
-            &copy; {new Date().getFullYear()} All rights reserved
+            &copy; {new Date().getFullYear()} {t("copyright")}
           </span>
         </div>
 
@@ -37,7 +42,7 @@ export function Footer() {
             Raider.IO
           </a>
           <span className="text-gray-700">
-            Not affiliated with Blizzard Entertainment
+            {t("notAffiliated")}
           </span>
         </div>
       </div>

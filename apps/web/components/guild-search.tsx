@@ -46,11 +46,11 @@ export function GuildSearch() {
   const [regionMenuPos, setRegionMenuPos] = useState({ top: 0, left: 0 });
 
   const regions = [
-    { id: "eu", label: "Europe", flag: "🇪🇺" },
-    { id: "us", label: "Americas", flag: "🇺🇸" },
-    { id: "kr", label: "Korea", flag: "🇰🇷" },
-    { id: "tw", label: "Taiwan", flag: "🇹🇼" },
-    { id: "cn", label: "China", flag: "🇨🇳" },
+    { id: "eu", flag: "🇪🇺" },
+    { id: "us", flag: "🇺🇸" },
+    { id: "kr", flag: "🇰🇷" },
+    { id: "tw", flag: "🇹🇼" },
+    { id: "cn", flag: "🇨🇳" },
   ];
 
   const updateRegionMenuPos = () => {
@@ -332,7 +332,7 @@ export function GuildSearch() {
                 style={{ top: regionMenuPos.top, left: regionMenuPos.left }}
               >
                 <div className="px-3 py-2 text-[9px] font-black uppercase tracking-[0.2em] text-gray-500 border-b border-white/5 mb-1">
-                  Select Region
+                  {t("selectRegion")}
                 </div>
                 {regions.map((r) => (
                   <button
@@ -350,7 +350,7 @@ export function GuildSearch() {
                   >
                     <div className="flex items-center gap-2">
                       <span className="text-base">{r.flag}</span>
-                      <span className="text-xs font-bold">{r.label}</span>
+                      <span className="text-xs font-bold">{r.id.toUpperCase()}</span>
                     </div>
                     <span className={`text-[10px] font-black uppercase opacity-40 group-hover/reg:opacity-100 ${region === r.id ? "text-white opacity-100" : ""}`}>
                       {r.id}
@@ -445,7 +445,7 @@ export function GuildSearch() {
                 </div>
                 <div className="flex items-center gap-4">
                   <span className="text-[10px] font-mono opacity-50 font-bold group-hover/item:opacity-80">
-                    {g.memberCount} chars
+                    {g.memberCount} {t("chars")}
                   </span>
                   <ArrowRight className="w-4 h-4 opacity-0 group-hover/item:opacity-100 transition-all translate-x-[-4px] group-hover/item:translate-x-0" />
                 </div>

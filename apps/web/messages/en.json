@@ -3,6 +3,16 @@
     "title": "WoW Guilds — Guild Roster Inspector",
     "description": "Look up any WoW guild. See every member's gear, M+ score, PvP rating, raid progress, and activity — in one table."
   },
+  "common": {
+    "justNow": "just now",
+    "secsAgo": "{n}s ago",
+    "minsAgo": "{n}m ago",
+    "hoursAgo": "{n}h ago",
+    "daysAgo": "{n}d ago",
+    "rosterSynced": "Roster synced · {count} members",
+    "statsUpdated": "Stats updated · {count} characters",
+    "syncEvent": "Sync event"
+  },
   "home": {
     "heading": "Guild Lookup",
     "tagline": "Every member. Every stat. One table.",
@@ -30,7 +40,11 @@
     "trackingStats": "{guilds} guilds · {members} characters tracked",
     "valueProp1": "Full roster overview",
     "valueProp2": "Activity detection",
-    "valueProp3": "No account needed"
+    "valueProp3": "No account needed",
+    "recentlySearched": "Recently Searched",
+    "recentlyUpdated": "Recently Updated",
+    "selectRegion": "Select Region",
+    "chars": "chars"
   },
   "login": {
     "brandName": "WoW Guilds",
@@ -108,7 +122,18 @@
     "syncInfoStats": "Stats (iLvl, M+, PvP) refresh every {min} min",
     "syncInfoRoster": "Roster updates every {hours}h",
     "syncInfoSource": "Data from Blizzard API & Raider.IO",
-    "syncInfoManual": "Use the refresh button for an instant update"
+    "syncInfoManual": "Use the refresh button for an instant update",
+    "share": "Share",
+    "linkCopied": "Link copied to clipboard"
+  },
+  "activity": {
+    "liveActivity": "Live Activity",
+    "waitingForEvents": "Waiting for sync events...",
+    "scanningRealms": "Scanning realms for updates..."
+  },
+  "footer": {
+    "copyright": "All rights reserved",
+    "notAffiliated": "Not affiliated with Blizzard Entertainment"
   },
   "table": {
     "character": "Character",

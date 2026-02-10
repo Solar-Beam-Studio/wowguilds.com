@@ -58,32 +58,9 @@ interface HomeClientProps {
   recentGuilds: RecentGuild[];
 }
 
-function timeAgo(dateStr: string): string {
-  const diff = Date.now() - new Date(dateStr).getTime();
-  const secs = Math.floor(diff / 1000);
-  if (secs < 60) return "just now";
-  const mins = Math.floor(secs / 60);
-  if (mins < 60) return `${mins}m ago`;
-  const hours = Math.floor(mins / 60);
-  if (hours < 24) return `${hours}h ago`;
-  return `${Math.floor(hours / 24)}d ago`;
-}
-
-function eventLabel(type: string, total: number, processed: number): string {
-  switch (type) {
-    case "discovery:complete":
-    case "discovery":
-      return `Roster synced · ${total || processed} members`;
-    case "sync:complete":
-    case "active_sync":
-      return `Stats updated · ${processed} characters`;
-    default:
-      return "Sync event";
-  }
-}
-
 export function HomeClient({ guilds, totalMembers, activeMembers, recentActivity, recentGuilds }: HomeClientProps) {
   const t = useTranslations("home");
+  const tc = useTranslations("common");
   const [recentSearches, setRecentSearches] = useState<RecentSearch[]>([]);
 
   useEffect(() => {
@@ -93,6 +70,30 @@ export function HomeClient({ guilds, totalMembers, activeMembers, recentActivity
     } catch {}
   }, []);
 
+  function timeAgo(dateStr: string): string {
+    const diff = Date.now() - new Date(dateStr).getTime();
+    const secs = Math.floor(diff / 1000);
+    if (secs < 60) return tc("justNow");
+    const mins = Math.floor(secs / 60);
+    if (mins < 60) return tc("minsAgo", { n: mins });
+    const hours = Math.floor(mins / 60);
+    if (hours < 24) return tc("hoursAgo", { n: hours });
+    return tc("daysAgo", { n: Math.floor(hours / 24) });
+  }
+
+  function eventLabel(type: string, total: number, processed: number): string {
+    switch (type) {
+      case "discovery:complete":
+      case "discovery":
+        return tc("rosterSynced", { count: String(total || processed) });
+      case "sync:complete":
+      case "active_sync":
+        return tc("statsUpdated", { count: String(processed) });
+      default:
+        return tc("syncEvent");
+    }
+  }
+
   return (
     <div className="min-h-screen text-white relative z-10">
       {/* Header */}
@@ -100,13 +101,13 @@ export function HomeClient({ guilds, totalMembers, activeMembers, recentActivity
         <AppLogo href="/" mode="full" />
         <div className="flex items-center gap-6">
           <div className="hidden md:flex items-center gap-4 text-[10px] font-black text-gray-600 uppercase tracking-[0.2em]">
-            <span>{guilds.length} guilds</span>
+            <span>{guilds.length} {t("verifiedGuilds")}</span>
             <span className="text-white/10">/</span>
-            <span>{totalMembers.toLocaleString()} characters</span>
+            <span>{totalMembers.toLocaleString()} {t("characters")}</span>
             <span className="text-white/10">/</span>
             <div className="flex items-center gap-1.5">
               <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-              <span>{activeMembers.toLocaleString()} active</span>
+              <span>{activeMembers.toLocaleString()} {t("activePlayers")}</span>
             </div>
           </div>
           <LanguageSwitcher />
@@ -182,7 +183,7 @@ export function HomeClient({ guilds, totalMembers, activeMembers, recentActivity
             <div className="flex items-center gap-2 mb-4">
               <History className="w-3.5 h-3.5 text-gray-600" />
               <span className="text-[10px] font-black text-gray-600 uppercase tracking-[0.2em]">
-                Recently Searched
+                {t("recentlySearched")}
               </span>
             </div>
             <div className="flex flex-wrap gap-2">
@@ -210,7 +211,7 @@ export function HomeClient({ guilds, totalMembers, activeMembers, recentActivity
             <div className="flex items-center gap-2 mb-4">
               <Clock className="w-3.5 h-3.5 text-gray-600" />
               <span className="text-[10px] font-black text-gray-600 uppercase tracking-[0.2em]">
-                Recently Updated
+                {t("recentlyUpdated")}
               </span>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -233,7 +234,7 @@ export function HomeClient({ guilds, totalMembers, activeMembers, recentActivity
                       {g.name}
                     </div>
                     <div className="text-[10px] text-gray-600">
-                      {g.realm}-{g.region.toUpperCase()} · {g.memberCount} members · {timeAgo(g.updatedAt)}
+                      {g.realm}-{g.region.toUpperCase()} · {g.memberCount} {t("members")} · {timeAgo(g.updatedAt)}
                     </div>
                   </div>
                 </Link>

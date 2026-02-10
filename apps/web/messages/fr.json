@@ -3,6 +3,16 @@
     "title": "WoW Guilds — Inspecteur de Roster",
     "description": "Cherchez n'importe quelle guilde WoW. Voir l'stuff, le score M+, les cotes PvP, la progression raid et l'activite de chaque membre — en un tableau."
   },
+  "common": {
+    "justNow": "a l'instant",
+    "secsAgo": "il y a {n}s",
+    "minsAgo": "il y a {n}min",
+    "hoursAgo": "il y a {n}h",
+    "daysAgo": "il y a {n}j",
+    "rosterSynced": "Roster synchro · {count} membres",
+    "statsUpdated": "Stats maj · {count} personnages",
+    "syncEvent": "Synchronisation"
+  },
   "home": {
     "heading": "Recherche de Guilde",
     "tagline": "Chaque membre. Chaque stat. Un seul tableau.",
@@ -30,7 +40,11 @@
     "trackingStats": "{guilds} guildes · {members} personnages suivis",
     "valueProp1": "Vue complete du roster",
     "valueProp2": "Detection d'activite",
-    "valueProp3": "Aucun compte requis"
+    "valueProp3": "Aucun compte requis",
+    "recentlySearched": "Recherches recentes",
+    "recentlyUpdated": "Mises a jour recentes",
+    "selectRegion": "Region",
+    "chars": "persos"
   },
   "login": {
     "brandName": "WoW Guilds",
@@ -108,7 +122,18 @@
     "syncInfoStats": "Stats (iLvl, M+, PvP) actualisees toutes les {min} min",
     "syncInfoRoster": "Le roster est mis a jour toutes les {hours}h",
     "syncInfoSource": "Donnees provenant de l'API Blizzard et Raider.IO",
-    "syncInfoManual": "Utilisez le bouton actualiser pour une mise a jour instantanee"
+    "syncInfoManual": "Utilisez le bouton actualiser pour une mise a jour instantanee",
+    "share": "Partager",
+    "linkCopied": "Lien copie"
+  },
+  "activity": {
+    "liveActivity": "Activite en direct",
+    "waitingForEvents": "En attente de synchronisations...",
+    "scanningRealms": "Scan des royaumes en cours..."
+  },
+  "footer": {
+    "copyright": "Tous droits reserves",
+    "notAffiliated": "Non affilie a Blizzard Entertainment"
   },
   "table": {
     "character": "Personnage",

@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
-import { Radio, Radar } from "lucide-react";
+import { Radar } from "lucide-react";
 import { guildPath } from "@/lib/guild-url";
 import { GuildCrest } from "@/components/guild-crest";
 
@@ -41,36 +42,6 @@ interface FeedItem {
   isLive?: boolean;
 }
 
-function timeAgo(dateStr: string): string {
-  const diff = Date.now() - new Date(dateStr).getTime();
-  const secs = Math.floor(diff / 1000);
-  if (secs < 10) return "just now";
-  if (secs < 60) return `${secs}s ago`;
-  const mins = Math.floor(secs / 60);
-  if (mins < 60) return `${mins}m ago`;
-  const hours = Math.floor(mins / 60);
-  if (hours < 24) return `${hours}h ago`;
-  return `${Math.floor(hours / 24)}d ago`;
-}
-
-function eventLabel(item: FeedItem): string {
-  const data = item.data || {};
-  switch (item.type) {
-    case "discovery:complete":
-    case "discovery": {
-      const count = data.total || data.processedItems || 0;
-      return `Roster synced · ${count} members`;
-    }
-    case "sync:complete":
-    case "active_sync": {
-      const count = data.synced || data.processedItems || 0;
-      return `Stats updated · ${count} characters`;
-    }
-    default:
-      return "Sync event";
-  }
-}
-
 // Convert server-rendered seed data to FeedItem format
 function seedToFeedItems(seeds: SeedItem[]): FeedItem[] {
   return seeds.map((s) => ({
@@ -93,9 +64,41 @@ function seedToFeedItems(seeds: SeedItem[]): FeedItem[] {
 const MAX_ITEMS = 20;
 
 export function ActivitySidebar({ seed }: { seed: SeedItem[] }) {
+  const tc = useTranslations("common");
+  const ta = useTranslations("activity");
   const [items, setItems] = useState<FeedItem[]>(() => seedToFeedItems(seed));
   const [connected, setConnected] = useState(false);
   const eventSourceRef = useRef<EventSource | null>(null);
+
+  function timeAgo(dateStr: string): string {
+    const diff = Date.now() - new Date(dateStr).getTime();
+    const secs = Math.floor(diff / 1000);
+    if (secs < 10) return tc("justNow");
+    if (secs < 60) return tc("secsAgo", { n: secs });
+    const mins = Math.floor(secs / 60);
+    if (mins < 60) return tc("minsAgo", { n: mins });
+    const hours = Math.floor(mins / 60);
+    if (hours < 24) return tc("hoursAgo", { n: hours });
+    return tc("daysAgo", { n: Math.floor(hours / 24) });
+  }
+
+  function eventLabel(item: FeedItem): string {
+    const data = item.data || {};
+    switch (item.type) {
+      case "discovery:complete":
+      case "discovery": {
+        const count = data.total || data.processedItems || 0;
+        return tc("rosterSynced", { count: String(count) });
+      }
+      case "sync:complete":
+      case "active_sync": {
+        const count = data.synced || data.processedItems || 0;
+        return tc("statsUpdated", { count: String(count) });
+      }
+      default:
+        return tc("syncEvent");
+    }
+  }
 
   useEffect(() => {
     const es = new EventSource("/api/activity");
@@ -157,7 +160,7 @@ export function ActivitySidebar({ seed }: { seed: SeedItem[] }) {
             )}
           </div>
           <h2 className="text-[11px] font-black text-gray-400 uppercase tracking-[0.3em]">
-            Live Activity
+            {ta("liveActivity")}
           </h2>
         </div>
       </div>
@@ -166,7 +169,7 @@ export function ActivitySidebar({ seed }: { seed: SeedItem[] }) {
       <div className="flex-1 overflow-y-auto px-4 space-y-1 min-h-0">
         {items.length === 0 ? (
           <div className="px-4 py-12 text-center">
-            <p className="text-xs text-gray-500">Waiting for sync events...</p>
+            <p className="text-xs text-gray-500">{ta("waitingForEvents")}</p>
           </div>
         ) : (
           items.map((item) => (
@@ -216,7 +219,7 @@ export function ActivitySidebar({ seed }: { seed: SeedItem[] }) {
         <div className="glass rounded-xl px-4 py-3 flex items-center gap-3">
           <Radar className="w-4 h-4 text-violet-500 animate-spin" style={{ animationDuration: "3s" }} />
           <p className="text-[11px] text-gray-500 font-medium">
-            Scanning realms for updates...
+            {ta("scanningRealms")}
           </p>
         </div>
       </div>
