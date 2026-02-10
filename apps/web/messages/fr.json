@@ -96,7 +96,19 @@
     "searchPlaceholder": "Rechercher des membres...",
     "notFound": "Guilde Introuvable",
     "tabLeaderboard": "Classement",
-    "tabRoster": "Effectif"
+    "tabRoster": "Effectif",
+    "updatedAgo": "Mis a jour {time}",
+    "syncing": "Synchronisation...",
+    "firstSync": "Premiere synchronisation en cours...",
+    "refreshSync": "Actualiser",
+    "syncTriggered": "Synchronisation lancee",
+    "syncTooMany": "Trop de requetes — reessayez dans une minute",
+    "syncError": "Echec du lancement de la synchronisation",
+    "syncInfoTitle": "Comment fonctionne la synchronisation",
+    "syncInfoStats": "Stats (iLvl, M+, PvP) actualisees toutes les {min} min",
+    "syncInfoRoster": "Le roster est mis a jour toutes les {hours}h",
+    "syncInfoSource": "Donnees provenant de l'API Blizzard et Raider.IO",
+    "syncInfoManual": "Utilisez le bouton actualiser pour une mise a jour instantanee"
   },
   "table": {
     "character": "Personnage",

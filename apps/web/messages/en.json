@@ -96,7 +96,19 @@
     "searchPlaceholder": "Search members...",
     "notFound": "Guild Not Found",
     "tabLeaderboard": "Leaderboard",
-    "tabRoster": "Roster"
+    "tabRoster": "Roster",
+    "updatedAgo": "Updated {time}",
+    "syncing": "Syncing...",
+    "firstSync": "First sync in progress...",
+    "refreshSync": "Refresh",
+    "syncTriggered": "Sync started",
+    "syncTooMany": "Too many refreshes — try again in a minute",
+    "syncError": "Failed to trigger sync",
+    "syncInfoTitle": "How sync works",
+    "syncInfoStats": "Stats (iLvl, M+, PvP) refresh every {min} min",
+    "syncInfoRoster": "Roster updates every {hours}h",
+    "syncInfoSource": "Data from Blizzard API & Raider.IO",
+    "syncInfoManual": "Use the refresh button for an instant update"
   },
   "table": {
     "character": "Character",

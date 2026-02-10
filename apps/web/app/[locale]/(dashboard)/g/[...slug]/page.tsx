@@ -4,6 +4,7 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { PublicGuildClient } from "./client";
 import { GuildCrest } from "@/components/guild-crest";
 import { ShareButton } from "./share-button";
+import { SyncStatus } from "./sync-status";
 import { ExternalLink } from "lucide-react";
 import { guildSlug, guildPath } from "@/lib/guild-url";
 import { validateGuildExists } from "@/lib/blizzard";
@@ -183,6 +184,19 @@ export default async function PublicGuildPage({ params }: Props) {
           <p className="text-gray-500 text-sm font-bold tracking-wide mt-2">
             {guild.realm} — {guild.region.toUpperCase()} · {serialized.length} {t("members")}
           </p>
+          <SyncStatus
+            guildId={guild.id}
+            lastSyncedAt={
+              (guild.lastActiveSyncAt && guild.lastDiscoveryAt
+                ? guild.lastActiveSyncAt > guild.lastDiscoveryAt
+                  ? guild.lastActiveSyncAt
+                  : guild.lastDiscoveryAt
+                : guild.lastActiveSyncAt || guild.lastDiscoveryAt
+              )?.toISOString() ?? null
+            }
+            syncIntervalMin={guild.activeSyncIntervalMin}
+            discoveryIntervalHours={guild.discoveryIntervalHours}
+          />
         </div>
       </div>
 
