@@ -190,6 +190,59 @@ tr:hover td {
   scrollbar-width: none;
 }
 
+/* Entrance animations */
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@utility animate-fade-up {
+  opacity: 0;
+  animation: fade-up 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@utility animate-fade-in {
+  opacity: 0;
+  animation: fade-in 0.5s ease-out forwards;
+}
+
+@utility animate-scale-in {
+  opacity: 0;
+  animation: scale-in 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@utility delay-0 { animation-delay: 0ms; }
+@utility delay-1 { animation-delay: 100ms; }
+@utility delay-2 { animation-delay: 200ms; }
+@utility delay-3 { animation-delay: 300ms; }
+@utility delay-4 { animation-delay: 400ms; }
+@utility delay-5 { animation-delay: 500ms; }
+@utility delay-6 { animation-delay: 600ms; }
+@utility delay-7 { animation-delay: 700ms; }
+@utility delay-8 { animation-delay: 800ms; }
+
 /* Stock ticker animation */
 @keyframes ticker {
   0% { transform: translateX(0); }

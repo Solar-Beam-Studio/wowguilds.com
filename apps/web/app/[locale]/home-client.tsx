@@ -95,7 +95,7 @@ export function HomeClient({ guilds, totalMembers, activeMembers, recentActivity
   return (
     <div className="min-h-screen text-white relative z-10">
       {/* Header */}
-      <header className="w-full px-8 py-5 flex items-center justify-between">
+      <header className="w-full px-8 py-5 flex items-center justify-between animate-fade-in delay-0">
         <AppLogo href="/" mode="full" />
         <div className="flex items-center gap-6">
           <div className="hidden md:flex items-center gap-4 text-[10px] font-black text-gray-600 uppercase tracking-[0.2em]">
@@ -114,17 +114,19 @@ export function HomeClient({ guilds, totalMembers, activeMembers, recentActivity
 
       {/* Hero — Google-style centered search */}
       <section className="flex flex-col items-center pt-24 md:pt-32 pb-16 text-center px-4">
-        <h1 className="text-5xl md:text-6xl font-black tracking-tighter leading-[0.95]">
+        <h1 className="text-5xl md:text-6xl font-black tracking-tighter leading-[0.95] animate-fade-up delay-1">
           WOW<span className="text-violet-500">GUILDS</span>.COM
         </h1>
-        <p className="text-base md:text-lg text-gray-400 mt-4 font-medium max-w-md">
+        <p className="text-base md:text-lg text-gray-400 mt-4 font-medium max-w-md animate-fade-up delay-2">
           {t("subtitle")}
         </p>
 
-        <GuildSearch />
+        <div className="animate-scale-in delay-3">
+          <GuildSearch />
+        </div>
 
         {/* Value props */}
-        <div className="flex flex-wrap justify-center gap-6 mt-8">
+        <div className="flex flex-wrap justify-center gap-6 mt-8 animate-fade-up delay-4">
           <div className="flex items-center gap-2 text-[11px] font-bold text-gray-500">
             <Eye className="w-3.5 h-3.5 text-violet-500" />
             {t("valueProp1")}
@@ -141,7 +143,7 @@ export function HomeClient({ guilds, totalMembers, activeMembers, recentActivity
 
         {/* Recent syncs — stock ticker */}
         {recentActivity.length > 0 && (
-          <div className="mt-10 w-full max-w-3xl overflow-hidden" style={{ maskImage: "linear-gradient(to right, transparent, black 10%, black 90%, transparent)" }}>
+          <div className="mt-10 w-full max-w-3xl overflow-hidden animate-fade-in delay-5" style={{ maskImage: "linear-gradient(to right, transparent, black 10%, black 90%, transparent)" }}>
             <div className="flex items-center gap-4 animate-ticker w-max">
               {/* Duplicate items for seamless loop */}
               {[...recentActivity.slice(0, 5), ...recentActivity.slice(0, 5)].map((item, i) => (
@@ -175,7 +177,7 @@ export function HomeClient({ guilds, totalMembers, activeMembers, recentActivity
       <section className="max-w-3xl mx-auto px-4 pb-20 space-y-10">
         {/* Recently Searched (from localStorage) */}
         {recentSearches.length > 0 && (
-          <div>
+          <div className="animate-fade-up delay-6">
             <div className="flex items-center gap-2 mb-4">
               <History className="w-3.5 h-3.5 text-gray-600" />
               <span className="text-[10px] font-black text-gray-600 uppercase tracking-[0.2em]">
@@ -203,7 +205,7 @@ export function HomeClient({ guilds, totalMembers, activeMembers, recentActivity
 
         {/* Recently Updated (from server) */}
         {recentGuilds.length > 0 && (
-          <div>
+          <div className="animate-fade-up delay-7">
             <div className="flex items-center gap-2 mb-4">
               <Clock className="w-3.5 h-3.5 text-gray-600" />
               <span className="text-[10px] font-black text-gray-600 uppercase tracking-[0.2em]">
@@ -240,7 +242,9 @@ export function HomeClient({ guilds, totalMembers, activeMembers, recentActivity
         )}
       </section>
 
-      <Footer />
+      <div className="animate-fade-in delay-8">
+        <Footer />
+      </div>
     </div>
   );
 }
