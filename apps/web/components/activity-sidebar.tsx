@@ -65,8 +65,6 @@ function eventLabel(item: FeedItem): string {
       const count = data.synced || data.processedItems || 0;
       return `Stats updated · ${count} characters`;
     }
-    case "member:updated":
-      return `${data.characterName || "Character"} updated`;
     default:
       return "Sync event";
   }

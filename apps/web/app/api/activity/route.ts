@@ -5,22 +5,36 @@ import { prisma } from "@wow/database";
 const MAX_CONNECTION_MS = 10 * 60 * 1000; // 10 min max (shorter than guild SSE)
 const HEARTBEAT_INTERVAL_MS = 30_000;
 
-// In-memory guild name cache (avoids DB hit per event)
-const guildNameCache = new Map<string, { name: string; realm: string; region: string }>();
+// In-memory guild cache (avoids DB hit per event)
+interface CachedGuild {
+  name: string;
+  realm: string;
+  region: string;
+  crestEmblemId: number | null;
+  crestEmblemColor: string | null;
+  crestBorderId: number | null;
+  crestBorderColor: string | null;
+  crestBgColor: string | null;
+}
+
+const guildCache = new Map<string, CachedGuild>();
 
 async function resolveGuild(guildId: string) {
-  const cached = guildNameCache.get(guildId);
+  const cached = guildCache.get(guildId);
   if (cached) return cached;
 
   const guild = await prisma.guild.findUnique({
     where: { id: guildId },
-    select: { name: true, realm: true, region: true },
+    select: {
+      name: true, realm: true, region: true,
+      crestEmblemId: true, crestEmblemColor: true,
+      crestBorderId: true, crestBorderColor: true, crestBgColor: true,
+    },
   });
 
   if (guild) {
-    guildNameCache.set(guildId, guild);
-    // Evict after 5 min to stay fresh
-    setTimeout(() => guildNameCache.delete(guildId), 5 * 60 * 1000);
+    guildCache.set(guildId, guild);
+    setTimeout(() => guildCache.delete(guildId), 5 * 60 * 1000);
   }
 
   return guild;
@@ -72,14 +86,19 @@ export async function GET(_request: NextRequest) {
         redis.on("pmessage", async (_pattern: string, _channel: string, message: string) => {
           try {
             const event = JSON.parse(message);
-            // Only forward interesting events (not noisy progress updates)
-            if (!["discovery:complete", "sync:complete", "member:updated"].includes(event.type)) return;
+            // Only forward guild-level events (not per-character noise)
+            if (!["discovery:complete", "sync:complete"].includes(event.type)) return;
 
             const guild = await resolveGuild(event.guildId);
             if (guild) {
               event.guildName = guild.name;
               event.guildRealm = guild.realm;
               event.guildRegion = guild.region;
+              event.crestEmblemId = guild.crestEmblemId;
+              event.crestEmblemColor = guild.crestEmblemColor;
+              event.crestBorderId = guild.crestBorderId;
+              event.crestBorderColor = guild.crestBorderColor;
+              event.crestBgColor = guild.crestBgColor;
             }
 
             safeSend(`data: ${JSON.stringify(event)}\n\n`);
