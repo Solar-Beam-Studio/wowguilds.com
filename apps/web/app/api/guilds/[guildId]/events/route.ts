@@ -1,7 +1,6 @@
 import { NextRequest } from "next/server";
 import Redis from "ioredis";
 import { prisma } from "@wow/database";
-import { requireSession } from "@/lib/session";
 
 const MAX_CONNECTION_MS = 30 * 60 * 1000; // 30 minutes max per SSE connection
 const HEARTBEAT_INTERVAL_MS = 30_000; // 30s heartbeat
@@ -11,15 +10,13 @@ export async function GET(
   { params }: { params: Promise<{ guildId: string }> }
 ) {
   try {
-    const session = await requireSession();
     const { guildId } = await params;
 
-    // Verify ownership
     const guild = await prisma.guild.findUnique({
       where: { id: guildId },
-      select: { userId: true },
+      select: { id: true },
     });
-    if (!guild || guild.userId !== session.user.id) {
+    if (!guild) {
       return new Response("Guild not found", { status: 404 });
     }
 
@@ -100,10 +97,7 @@ export async function GET(
         Connection: "keep-alive",
       },
     });
-  } catch (error) {
-    if (error instanceof Error && error.message === "Unauthorized") {
-      return new Response("Unauthorized", { status: 401 });
-    }
+  } catch {
     return new Response("Internal error", { status: 500 });
   }
 }

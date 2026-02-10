@@ -6,7 +6,7 @@ import { signOut, useSession } from "@/lib/auth-client";
 import { useTheme } from "@/hooks/use-theme";
 import { AppLogo } from "@/components/app-logo";
 import { LanguageSwitcher } from "@/components/language-switcher";
-import { Sun, Moon, Zap, LayoutGrid, LogOut, LogIn, UserPlus } from "lucide-react";
+import { Sun, Moon, Zap, LogOut } from "lucide-react";
 import type { ReactNode } from "react";
 
 export function Sidebar() {
@@ -53,7 +53,6 @@ export function Sidebar() {
           <section className="flex flex-col gap-1.5">
             <p className="px-4 text-[10px] font-display font-bold text-[var(--text-secondary)] uppercase tracking-[0.2em] mb-2">{t("navigation")}</p>
             {navLink("/", t("explore"), <Zap className="w-4 h-4" />, pathname === "/")}
-            {navLink("/guilds", t("myGuilds"), <LayoutGrid className="w-4 h-4" />, pathname.startsWith("/guilds"))}
           </section>
         </div>
 
@@ -83,18 +82,7 @@ export function Sidebar() {
                 <LogOut className="w-4 h-4" />
               </button>
             </div>
-          ) : (
-            <div className="flex flex-col gap-2">
-              <Link href="/signup" className="btn btn-primary w-full font-bold shadow-lg shadow-accent/20 h-11">
-                <UserPlus className="w-4 h-4" />
-                {t("getStarted")}
-              </Link>
-              <Link href="/login" className="btn btn-ghost w-full font-bold h-11">
-                <LogIn className="w-4 h-4" />
-                {t("signIn")}
-              </Link>
-            </div>
-          )}
+          ) : null}
         </div>
       </div>
     </aside>

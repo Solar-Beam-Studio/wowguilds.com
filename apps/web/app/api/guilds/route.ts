@@ -1,11 +1,28 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@wow/database";
+import { prisma, Prisma } from "@wow/database";
 import { requireSession } from "@/lib/session";
 import {
   enqueueImmediateDiscovery,
   registerGuildSchedules,
 } from "@/lib/queue";
 
+// In-memory rate limit: 10 req/min per IP
+const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
+const RATE_LIMIT = 10;
+const RATE_WINDOW_MS = 60_000;
+
+function isRateLimited(ip: string): boolean {
+  const now = Date.now();
+  const entry = rateLimitMap.get(ip);
+  if (!entry || now > entry.resetAt) {
+    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_WINDOW_MS });
+    return false;
+  }
+  entry.count++;
+  return entry.count > RATE_LIMIT;
+}
+
+// GET — auth-protected, returns user's guilds (for /guilds dashboard)
 export async function GET() {
   try {
     const session = await requireSession();
@@ -32,9 +49,14 @@ export async function GET() {
   }
 }
 
+// POST — public lookup-or-create
 export async function POST(request: NextRequest) {
   try {
-    const session = await requireSession();
+    const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+    if (isRateLimited(ip)) {
+      return NextResponse.json({ error: "Too many requests" }, { status: 429 });
+    }
+
     const body = await request.json();
     const { name, realm, region } = body;
 
@@ -58,44 +80,54 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Invalid region" }, { status: 400 });
     }
 
-    const guild = await prisma.guild.create({
-      data: {
-        name,
-        realm: realm.toLowerCase(),
-        region: region.toLowerCase(),
-        userId: session.user.id,
-      },
+    const normalizedRealm = realm.toLowerCase();
+    const normalizedRegion = region.toLowerCase();
+
+    // Lookup existing guild
+    const existing = await prisma.guild.findUnique({
+      where: { name_realm_region: { name, realm: normalizedRealm, region: normalizedRegion } },
     });
 
-    // Register repeatable sync jobs
-    await registerGuildSchedules(
-      guild.id,
-      guild.discoveryIntervalHours,
-      guild.activeSyncIntervalMin
-    );
-
-    // Trigger immediate discovery
-    await enqueueImmediateDiscovery(guild.id);
-
-    return NextResponse.json(guild, { status: 201 });
-  } catch (error) {
-    if (error instanceof Error && error.message === "Unauthorized") {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (existing) {
+      return NextResponse.json(existing);
     }
 
-    // Unique constraint violation
-    if (
-      error instanceof Error &&
-      error.message.includes("Unique constraint")
-    ) {
-      return NextResponse.json(
-        { error: "This guild is already being tracked" },
-        { status: 409 }
+    // Create new guild (no userId — public lookup)
+    try {
+      const guild = await prisma.guild.create({
+        data: {
+          name,
+          realm: normalizedRealm,
+          region: normalizedRegion,
+        },
+      });
+
+      // Register repeatable sync jobs
+      await registerGuildSchedules(
+        guild.id,
+        guild.discoveryIntervalHours,
+        guild.activeSyncIntervalMin
       );
-    }
 
+      // Trigger immediate discovery
+      await enqueueImmediateDiscovery(guild.id);
+
+      return NextResponse.json(guild, { status: 201 });
+    } catch (error) {
+      // P2002 race condition: another request created it first
+      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
+        const existing = await prisma.guild.findUnique({
+          where: { name_realm_region: { name, realm: normalizedRealm, region: normalizedRegion } },
+        });
+        if (existing) {
+          return NextResponse.json(existing);
+        }
+      }
+      throw error;
+    }
+  } catch {
     return NextResponse.json(
-      { error: "Failed to create guild" },
+      { error: "Failed to lookup guild" },
       { status: 500 }
     );
   }

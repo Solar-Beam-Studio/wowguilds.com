@@ -89,11 +89,11 @@ model Guild {
   memberCount            Int       @default(0)
   lastDiscoveryAt        DateTime?
   lastActiveSyncAt       DateTime?
-  userId                 String
+  userId                 String?
   createdAt              DateTime  @default(now())
   updatedAt              DateTime  @updatedAt
 
-  user       User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user       User?         @relation(fields: [userId], references: [id], onDelete: SetNull)
   members    GuildMember[]
   syncJobs   SyncJob[]
   syncErrors SyncError[]

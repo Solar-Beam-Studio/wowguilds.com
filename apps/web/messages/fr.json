@@ -20,7 +20,12 @@
     "noGuildsMatch": "Aucune guilde ne correspond à votre recherche.",
     "noGuildsYet": "Aucune guilde suivie pour le moment.",
     "members": "Membres",
-    "topRanks": "Meilleurs Classements"
+    "topRanks": "Meilleurs Classements",
+    "guildNamePlaceholder": "Nom de la Guilde",
+    "realmPlaceholder": "Royaume",
+    "searchButton": "Rechercher",
+    "recentGuilds": "Récemment Synchronisées",
+    "trackingStats": "{guilds} guildes · {members} personnages suivis"
   },
   "login": {
     "brandName": "WoW Guilds",

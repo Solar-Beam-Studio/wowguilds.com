@@ -20,7 +20,7 @@ export function LeaderboardCard({
 }) {
   return (
     <div
-      className={`bg-[var(--bg-tertiary)] rounded-2xl border border-[var(--border)] border-t-2 ${category.accentColor} p-5`}
+      className="bg-[var(--bg-tertiary)] rounded-2xl border border-[var(--border)] p-5"
     >
       <div className="flex items-center gap-2 mb-4">
         <span className="text-lg">{category.icon}</span>

@@ -20,7 +20,12 @@
     "noGuildsMatch": "No guilds match your search.",
     "noGuildsYet": "No guilds tracked yet.",
     "members": "Members",
-    "topRanks": "Top Ranks"
+    "topRanks": "Top Ranks",
+    "guildNamePlaceholder": "Guild Name",
+    "realmPlaceholder": "Realm",
+    "searchButton": "Search",
+    "recentGuilds": "Recently Synced",
+    "trackingStats": "{guilds} guilds · {members} characters tracked"
   },
   "login": {
     "brandName": "WoW Guilds",
