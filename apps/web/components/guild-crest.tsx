@@ -32,10 +32,10 @@ export function GuildCrest({
   className = "",
 }: GuildCrestProps) {
   if (!emblemId && !borderId) {
-    // Fallback: colored circle with first letter placeholder
+    // Fallback: colored square
     return (
       <div
-        className={`rounded-xl flex items-center justify-center font-bold text-white shrink-0 ${className}`}
+        className={`rounded-lg flex items-center justify-center font-bold text-white shrink-0 ${className}`}
         style={{
           width: size,
           height: size,
@@ -45,16 +45,35 @@ export function GuildCrest({
     );
   }
 
+  const borderUrl = borderId ? BORDER_URL(borderId) : null;
+
   return (
     <div
       className={`relative shrink-0 ${className}`}
       style={{ width: size, height: size }}
     >
-      {/* Background */}
-      <div
-        className="absolute inset-[10%] rounded-sm"
-        style={{ background: parseColor(bgColor) }}
-      />
+      {/* Background — clipped to border shape */}
+      {borderUrl ? (
+        <div
+          className="absolute inset-0"
+          style={{
+            backgroundColor: parseColor(bgColor),
+            maskImage: `url(${borderUrl})`,
+            WebkitMaskImage: `url(${borderUrl})`,
+            maskSize: "contain",
+            WebkitMaskSize: "contain",
+            maskRepeat: "no-repeat",
+            WebkitMaskRepeat: "no-repeat",
+            maskPosition: "center",
+            WebkitMaskPosition: "center",
+          }}
+        />
+      ) : (
+        <div
+          className="absolute inset-[10%] rounded-sm"
+          style={{ background: parseColor(bgColor) }}
+        />
+      )}
 
       {/* Border */}
       {borderId && (
