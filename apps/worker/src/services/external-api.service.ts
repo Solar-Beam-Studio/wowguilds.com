@@ -18,6 +18,8 @@ export interface CharacterData {
   raidProgress: string | null;
   weeklyKeysCompleted: number;
   weeklyBestKeyLevel: number;
+  weeklySlot2KeyLevel: number;
+  weeklySlot3KeyLevel: number;
   lastUpdated: Date;
 }
 
@@ -245,7 +247,10 @@ export class ExternalApiService {
 
     const weeklyRuns = data.mythic_plus_weekly_highest_level_runs || [];
     const weeklyKeysCompleted = weeklyRuns.length;
-    const weeklyBestKeyLevel = weeklyRuns.reduce((max, run) => Math.max(max, run.mythic_level), 0);
+    const sortedLevels = weeklyRuns.map((r) => r.mythic_level).sort((a, b) => b - a);
+    const weeklyBestKeyLevel = sortedLevels[0] ?? 0;
+    const weeklySlot2KeyLevel = sortedLevels[3] ?? 0;
+    const weeklySlot3KeyLevel = sortedLevels[7] ?? 0;
 
     let raidProgress: string | null = null;
     if (data.raid_progression) {
@@ -284,6 +289,8 @@ export class ExternalApiService {
       raidProgress,
       weeklyKeysCompleted,
       weeklyBestKeyLevel,
+      weeklySlot2KeyLevel,
+      weeklySlot3KeyLevel,
       ...blizzardExtras,
       lastUpdated: new Date(),
     };
@@ -532,6 +539,8 @@ export class ExternalApiService {
       raidProgress: null,
       weeklyKeysCompleted: 0,
       weeklyBestKeyLevel: 0,
+      weeklySlot2KeyLevel: 0,
+      weeklySlot3KeyLevel: 0,
       ...blizzardExtras,
       lastUpdated: new Date(),
     };

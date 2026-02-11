@@ -143,10 +143,17 @@ export function MemberTable({ members, region, search }: MemberTableProps) {
       sortValue: (m) => m.weeklyKeysCompleted ?? 0,
       render: (m) => {
         const runs = m.weeklyKeysCompleted ?? 0;
-        const best = m.weeklyBestKeyLevel ?? 0;
+        const s1 = m.weeklyBestKeyLevel ?? 0;
+        const s2 = m.weeklySlot2KeyLevel ?? 0;
+        const s3 = m.weeklySlot3KeyLevel ?? 0;
         const slots = runs >= 8 ? 3 : runs >= 4 ? 2 : runs >= 1 ? 1 : 0;
+        const slotLines = [
+          s1 > 0 ? `Slot 1: +${s1}` : null,
+          runs >= 4 && s2 > 0 ? `Slot 2: +${s2}` : runs >= 1 && runs < 4 ? `Slot 2: ${4 - runs} more runs` : null,
+          runs >= 8 && s3 > 0 ? `Slot 3: +${s3}` : runs >= 4 && runs < 8 ? `Slot 3: ${8 - runs} more runs` : null,
+        ].filter(Boolean);
         const tooltip = runs > 0
-          ? `${runs} M+ runs this week → ${slots}/3 vault slot${slots > 1 ? "s" : ""}${best > 0 ? ` (best: +${best})` : ""}`
+          ? `${runs} M+ runs → ${slots}/3 vault slots\n${slotLines.join("\n")}`
           : "No M+ runs this week";
         return (
           <span
@@ -154,6 +161,7 @@ export function MemberTable({ members, region, search }: MemberTableProps) {
             title={tooltip}
           >
             {runs > 0 ? `${runs}/8` : "-"}
+            {s1 > 0 && <span className="text-[0.6875rem] opacity-50 ml-1">+{s1}</span>}
           </span>
         );
       },

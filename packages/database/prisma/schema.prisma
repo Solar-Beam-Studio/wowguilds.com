@@ -133,6 +133,8 @@ model GuildMember {
   raidProgress           String?
   weeklyKeysCompleted    Int       @default(0)
   weeklyBestKeyLevel     Int       @default(0)
+  weeklySlot2KeyLevel    Int       @default(0)
+  weeklySlot3KeyLevel    Int       @default(0)
   lastLoginTimestamp     BigInt?
   activityStatus         String    @default("inactive")
   lastActivityCheck      DateTime  @default(now())

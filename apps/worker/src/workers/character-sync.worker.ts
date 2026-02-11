@@ -79,6 +79,8 @@ export function createCharacterSyncWorker(
               raidProgress: data.raidProgress,
               weeklyKeysCompleted: data.weeklyKeysCompleted,
               weeklyBestKeyLevel: data.weeklyBestKeyLevel,
+              weeklySlot2KeyLevel: data.weeklySlot2KeyLevel,
+              weeklySlot3KeyLevel: data.weeklySlot3KeyLevel,
               lastHourlyCheck: new Date(),
               lastUpdated: new Date(),
             },

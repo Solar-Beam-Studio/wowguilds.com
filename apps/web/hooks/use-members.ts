@@ -18,6 +18,8 @@ export interface GuildMember {
   raidProgress: string | null;
   weeklyKeysCompleted: number;
   weeklyBestKeyLevel: number;
+  weeklySlot2KeyLevel: number;
+  weeklySlot3KeyLevel: number;
   lastLoginTimestamp: number | null;
   activityStatus: string;
   lastUpdated: string;
