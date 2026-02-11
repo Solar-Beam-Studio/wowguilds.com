@@ -143,8 +143,16 @@ export function MemberTable({ members, region, search }: MemberTableProps) {
       sortValue: (m) => m.weeklyKeysCompleted ?? 0,
       render: (m) => {
         const runs = m.weeklyKeysCompleted ?? 0;
+        const best = m.weeklyBestKeyLevel ?? 0;
+        const slots = runs >= 8 ? 3 : runs >= 4 ? 2 : runs >= 1 ? 1 : 0;
+        const tooltip = runs > 0
+          ? `${runs} M+ runs this week → ${slots}/3 vault slot${slots > 1 ? "s" : ""}${best > 0 ? ` (best: +${best})` : ""}`
+          : "No M+ runs this week";
         return (
-          <span className={`text-[0.8125rem] font-mono font-medium tabular-nums ${getVaultColor(runs)}`}>
+          <span
+            className={`text-[0.8125rem] font-mono font-medium tabular-nums ${getVaultColor(runs)}`}
+            title={tooltip}
+          >
             {runs > 0 ? `${runs}/8` : "-"}
           </span>
         );
