@@ -12,3 +12,4 @@ export type {
 } from "@prisma/client";
 export { Prisma } from "@prisma/client";
 export * from "./wow-constants";
+export { sendAlert } from "./alert";

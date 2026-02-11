@@ -7,7 +7,7 @@ import { createGuildDiscoveryWorker } from "./workers/guild-discovery.worker";
 import { createCharacterSyncWorker } from "./workers/character-sync.worker";
 import { createActivityCheckWorker } from "./workers/activity-check.worker";
 import { createSyncSchedulerWorker } from "./workers/sync-scheduler.worker";
-import { prisma } from "@wow/database";
+import { prisma, sendAlert } from "@wow/database";
 
 async function main() {
   console.log("[Worker] Starting WoW Guild Sync worker service...");
@@ -63,7 +63,14 @@ async function main() {
   process.on("SIGINT", shutdown);
 }
 
-main().catch((error) => {
+main().catch(async (error) => {
   console.error("[Worker] Fatal error:", error);
+  await sendAlert({
+    title: "Worker Process Crashed",
+    message: error instanceof Error ? error.message : String(error),
+    level: "error",
+    source: "worker",
+    emoji: "💀",
+  });
   process.exit(1);
 });

@@ -1,6 +1,6 @@
 import { Worker, type Job } from "bullmq";
 import type { ConnectionOptions } from "bullmq";
-import { prisma } from "@wow/database";
+import { prisma, sendAlert } from "@wow/database";
 import { QUEUE_NAMES } from "../queues";
 import type { ExternalApiService } from "../services/external-api.service";
 import type { EventPublisher } from "../services/event-publisher.service";
@@ -222,6 +222,13 @@ export function createGuildDiscoveryWorker(
           guildId,
           `Discovery failed: ${errorMsg}`
         );
+        await sendAlert({
+          title: "Guild Discovery Failed",
+          message: `Guild ${guild.name} (${guild.region}): ${errorMsg}`,
+          level: "error",
+          source: "worker/guild-discovery",
+          emoji: "🔍",
+        });
         throw error;
       }
     },

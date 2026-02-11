@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { prisma } from "@wow/database";
+import { prisma, sendAlert } from "@wow/database";
 import { enqueueImmediateDiscovery } from "@/lib/queue";
 
 // In-memory rate limit: 5 req/min per IP for sync triggers
@@ -71,7 +71,14 @@ export async function POST(
     await enqueueImmediateDiscovery(guildId);
 
     return NextResponse.json({ message: "Sync triggered" });
-  } catch {
+  } catch (error) {
+    sendAlert({
+      title: "Sync Trigger Failed",
+      message: error instanceof Error ? error.message : String(error),
+      level: "error",
+      source: "web/sync-trigger",
+      emoji: "🔄",
+    });
     return NextResponse.json(
       { error: "Failed to trigger sync" },
       { status: 500 }

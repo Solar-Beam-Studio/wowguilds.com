@@ -1,6 +1,6 @@
 import { Worker, type Job } from "bullmq";
 import type { ConnectionOptions } from "bullmq";
-import { prisma } from "@wow/database";
+import { prisma, sendAlert } from "@wow/database";
 import { QUEUE_NAMES } from "../queues";
 import type { ExternalApiService } from "../services/external-api.service";
 import type { EventPublisher } from "../services/event-publisher.service";
@@ -135,6 +135,17 @@ export function createCharacterSyncWorker(
       console.log(
         `[CharSync] Batch ${batchIndex + 1} done: ${syncedCount} synced, ${errorCount} errors`
       );
+
+      // Alert if >50% of batch failed
+      if (characters.length > 0 && errorCount / characters.length > 0.5) {
+        await sendAlert({
+          title: "High Sync Error Rate",
+          message: `Guild ${guild.name}: batch ${batchIndex + 1}/${totalBatches} — ${errorCount}/${characters.length} failed (${Math.round((errorCount / characters.length) * 100)}%)`,
+          level: "warning",
+          source: "worker/character-sync",
+          emoji: "⚠️",
+        });
+      }
 
       // Check if all batches are done → mark SyncJob completed + publish event
       const syncJobState = await prisma.syncJob.findUnique({
