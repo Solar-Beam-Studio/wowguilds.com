@@ -119,7 +119,14 @@ export function HomeClient({ guilds, totalMembers, activeMembers, recentActivity
 
         {/* Recent syncs — stock ticker */}
         {recentActivity.length > 0 && (
-          <div className="mt-10 w-full max-w-3xl overflow-hidden animate-fade-in delay-5" style={{ maskImage: "linear-gradient(to right, transparent, black 10%, black 90%, transparent)" }}>
+          <div className="mt-10 w-full max-w-3xl animate-fade-in delay-5">
+            <div className="flex items-center justify-center gap-2 mb-3">
+              <Activity className="w-3.5 h-3.5 text-gray-600" />
+              <span className="text-[10px] font-black text-gray-600 uppercase tracking-[0.2em]">
+                {t("recentlyUpdated")}
+              </span>
+            </div>
+            <div className="overflow-hidden" style={{ maskImage: "linear-gradient(to right, transparent, black 10%, black 90%, transparent)" }}>
             <div className="flex items-center gap-4 animate-ticker w-max">
               {/* Duplicate items for seamless loop */}
               {[...recentActivity.slice(0, 5), ...recentActivity.slice(0, 5)].map((item, i) => (
@@ -144,6 +151,7 @@ export function HomeClient({ guilds, totalMembers, activeMembers, recentActivity
                   </span>
                 </Link>
               ))}
+            </div>
             </div>
           </div>
         )}
