@@ -16,6 +16,16 @@ function parseColor(rgba: string | null): string {
   return `rgba(${parts[0]},${parts[1]},${parts[2]},${parts[3] ?? 1})`;
 }
 
+function isTransparent(rgba: string | null): boolean {
+  if (!rgba) return true;
+  const parts = rgba.split(",");
+  const r = Number(parts[0]) || 0;
+  const g = Number(parts[1]) || 0;
+  const b = Number(parts[2]) || 0;
+  const a = parts[3] !== undefined ? Number(parts[3]) : 1;
+  return a < 0.1 || (r + g + b < 30 && a < 0.5);
+}
+
 const EMBLEM_URL = (id: number) =>
   `https://render.worldofwarcraft.com/us/guild/tabards/emblem_${id}.png`;
 
@@ -57,6 +67,9 @@ export function GuildCrest({
     WebkitMaskPosition: "center",
   } as const);
 
+  const needsBg = isTransparent(bgColor);
+  const effectiveBg = needsBg ? "rgba(255,255,255,0.12)" : parseColor(bgColor);
+
   return (
     <div
       className={`relative shrink-0 ${className}`}
@@ -66,12 +79,12 @@ export function GuildCrest({
       {borderUrl ? (
         <div
           className="absolute inset-0"
-          style={{ backgroundColor: parseColor(bgColor), ...maskProps(borderUrl) }}
+          style={{ backgroundColor: effectiveBg, ...maskProps(borderUrl) }}
         />
       ) : (
         <div
           className="absolute inset-[10%] rounded-sm"
-          style={{ background: parseColor(bgColor) }}
+          style={{ background: effectiveBg }}
         />
       )}
 

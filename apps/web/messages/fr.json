@@ -131,7 +131,8 @@
     "syncInfoSource": "Données provenant de l'API Blizzard et Raider.IO",
     "syncInfoManual": "Utilisez le bouton actualiser pour une mise à jour instantanée",
     "share": "Partager",
-    "linkCopied": "Lien copié"
+    "linkCopied": "Lien copié",
+    "armory": "Armurerie"
   },
   "activity": {
     "liveActivity": "Activité en direct",
