@@ -20,6 +20,7 @@ services:
       - "3000:3000"
     env_file: .env
     environment:
+      - HOSTNAME=0.0.0.0
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - ZENHOOK_WEBHOOK_URL=${ZENHOOK_WEBHOOK_URL}
