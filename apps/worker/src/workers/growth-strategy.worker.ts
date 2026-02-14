@@ -5,6 +5,7 @@ import { QUEUE_NAMES } from "../queues";
 import type { OpenRouterService } from "../services/openrouter.service";
 import type { PirschService } from "../services/pirsch.service";
 import type { DataAggregationService } from "../services/data-aggregation.service";
+import type { GameContextService } from "../services/game-context.service";
 
 interface StrategyJobData {
   manual?: boolean;
@@ -21,7 +22,8 @@ export function createGrowthStrategyWorker(
   connection: ConnectionOptions,
   openRouter: OpenRouterService,
   pirsch: PirschService,
-  dataAgg: DataAggregationService
+  dataAgg: DataAggregationService,
+  gameContext: GameContextService
 ) {
   const generateQueue = new Queue(QUEUE_NAMES.GROWTH_GENERATE, {
     connection,
@@ -74,22 +76,17 @@ export function createGrowthStrategyWorker(
           orderBy: { pageViews: "desc" },
         });
 
-        // 3. Get current game stats
-        const [overview, classDist] = await Promise.all([
+        // 3. Get current game stats + live game context
+        const [overview, classDist, gameCtx] = await Promise.all([
           dataAgg.getOverviewStats(),
           dataAgg.getClassDistribution(),
+          gameContext.getCurrentContext(),
         ]);
 
         // 4. AI generates content plan
-        const currentDate = new Date().toISOString().split("T")[0];
-        const systemPrompt = `You are a content strategist for wowguilds.com, a World of Warcraft guild lookup and roster tracking tool. Today is ${currentDate}.
+        const systemPrompt = `You are a content strategist for wowguilds.com, a World of Warcraft guild lookup and roster tracking tool. Today is ${gameCtx.date}.
 
-CURRENT WOW GAME STATE (use this to write timely, relevant content):
-- Expansion: The War Within (released Aug 2024)
-- Current raid: Liberation of Undermine (Season 2, launched Jan 2025)
-- Current M+ season: TWW Season 2 (new dungeon pool)
-- PvP Season: TWW Season 2
-- Recent major changes: Hero Talents system, Delves, Warbands (account-wide progression)
+${gameContext.formatForPrompt(gameCtx)}
 
 Your goal is to generate SEO content ideas that:
 - Target long-tail WoW keywords with low competition

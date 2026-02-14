@@ -7,6 +7,7 @@ import { OpenRouterService } from "./services/openrouter.service";
 import { PirschService } from "./services/pirsch.service";
 import { DataAggregationService } from "./services/data-aggregation.service";
 import { IndexNowService } from "./services/indexnow.service";
+import { GameContextService } from "./services/game-context.service";
 import { createGuildDiscoveryWorker } from "./workers/guild-discovery.worker";
 import { createCharacterSyncWorker } from "./workers/character-sync.worker";
 import { createActivityCheckWorker } from "./workers/activity-check.worker";
@@ -31,6 +32,7 @@ async function main() {
   const pirschService = new PirschService(redis);
   const dataAgg = new DataAggregationService();
   const indexNow = new IndexNowService();
+  const gameCtx = new GameContextService();
 
   const queues = createQueues(connection);
 
@@ -39,7 +41,7 @@ async function main() {
     createCharacterSyncWorker(connection, externalApi, eventPublisher),
     createActivityCheckWorker(connection, externalApi, eventPublisher),
     createSyncSchedulerWorker(connection, eventPublisher),
-    createGrowthStrategyWorker(connection, openRouter, pirschService, dataAgg),
+    createGrowthStrategyWorker(connection, openRouter, pirschService, dataAgg, gameCtx),
     createGrowthGenerateWorker(connection, openRouter, dataAgg),
     createGrowthReviewWorker(connection, openRouter, indexNow),
   ];
