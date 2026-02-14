@@ -9,6 +9,7 @@ export const QUEUE_NAMES = {
   GROWTH_STRATEGY: "growth-strategy",
   GROWTH_GENERATE: "growth-generate",
   GROWTH_REVIEW: "growth-review",
+  GROWTH_RECAP: "growth-recap",
 } as const;
 
 export function getRedisConnection(): ConnectionOptions {
@@ -29,5 +30,6 @@ export function createQueues(connection: ConnectionOptions) {
     growthStrategy: new Queue(QUEUE_NAMES.GROWTH_STRATEGY, { connection }),
     growthGenerate: new Queue(QUEUE_NAMES.GROWTH_GENERATE, { connection }),
     growthReview: new Queue(QUEUE_NAMES.GROWTH_REVIEW, { connection }),
+    growthRecap: new Queue(QUEUE_NAMES.GROWTH_RECAP, { connection }),
   };
 }

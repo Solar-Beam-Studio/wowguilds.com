@@ -100,8 +100,16 @@ ${guide.content}`,
               publishedAt: new Date(),
             },
           });
-          // Ping search engines
+          // Ping search engines + notify
           indexNow.submitGuide(guide.slug, guide.locale).catch(() => {});
+          const prefix = guide.locale === "en" ? "" : `/${guide.locale}`;
+          await sendAlert({
+            title: "Article Published",
+            message: `"${guide.title}" (${guide.locale.toUpperCase()}) — Score: ${score}/10, ${guide.wordCount} words\nhttps://wowguilds.com${prefix}/guides/${guide.slug}`,
+            level: "success",
+            source: "worker/growth-review",
+            emoji: "📰",
+          });
 
           console.log(
             `[Growth/Review] Published "${guide.title}" (score: ${score})`

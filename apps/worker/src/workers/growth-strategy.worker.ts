@@ -1,6 +1,6 @@
 import { Worker, Queue, type Job } from "bullmq";
 import type { ConnectionOptions } from "bullmq";
-import { prisma } from "@wow/database";
+import { prisma, sendAlert } from "@wow/database";
 import { QUEUE_NAMES } from "../queues";
 import type { OpenRouterService } from "../services/openrouter.service";
 import type { PirschService } from "../services/pirsch.service";
@@ -191,6 +191,14 @@ Generate a content plan for this week.`;
             cost: result.cost,
             duration,
           },
+        });
+
+        await sendAlert({
+          title: "Growth Strategy Complete",
+          message: `Planned ${plan.articles.length} articles for this week.\n\n${plan.articles.map((a, i) => `${i + 1}. ${a.title} [${a.category}]`).join("\n")}\n\nReasoning: ${plan.reasoning}\nCost: $${result.cost.toFixed(4)}`,
+          level: "success",
+          source: "worker/growth-strategy",
+          emoji: "🧠",
         });
 
         console.log(

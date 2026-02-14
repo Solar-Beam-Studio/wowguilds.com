@@ -15,6 +15,7 @@ import { createSyncSchedulerWorker } from "./workers/sync-scheduler.worker";
 import { createGrowthStrategyWorker } from "./workers/growth-strategy.worker";
 import { createGrowthGenerateWorker } from "./workers/growth-generate.worker";
 import { createGrowthReviewWorker } from "./workers/growth-review.worker";
+import { createGrowthRecapWorker } from "./workers/growth-recap.worker";
 import { prisma, sendAlert } from "@wow/database";
 
 async function main() {
@@ -44,6 +45,7 @@ async function main() {
     createGrowthStrategyWorker(connection, openRouter, pirschService, dataAgg, gameCtx),
     createGrowthGenerateWorker(connection, openRouter, dataAgg),
     createGrowthReviewWorker(connection, openRouter, indexNow),
+    createGrowthRecapWorker(connection, pirschService, openRouter),
   ];
 
   console.log(`[Worker] ${workers.length} workers started`);
@@ -78,6 +80,13 @@ async function main() {
     "growth:weekly-analytics",
     { pattern: "0 6 * * 4" },
     { name: "growth:weekly-analytics", data: { analyticsOnly: true } }
+  );
+
+  // Daily recap (20:00 UTC every day)
+  await queues.growthRecap.upsertJobScheduler(
+    "growth:daily-recap",
+    { pattern: "0 20 * * *" },
+    { name: "growth:daily-recap", data: {} }
   );
 
   console.log(`[Worker] Registered jobs for ${guilds.length} guilds + growth agent`);
