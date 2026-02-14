@@ -97,9 +97,9 @@ export function AnalyticsTab({ members }: { members: GuildMember[] }) {
       else inactiveCount++;
 
       const rp = m.raidProgress ?? "";
-      if (/mythic/i.test(rp)) raidBuckets.Mythic++;
-      else if (/heroic/i.test(rp)) raidBuckets.Heroic++;
-      else if (/normal/i.test(rp)) raidBuckets.Normal++;
+      if (/\bM$/i.test(rp) || /mythic/i.test(rp)) raidBuckets.Mythic++;
+      else if (/\bH$/i.test(rp) || /heroic/i.test(rp)) raidBuckets.Heroic++;
+      else if (/\bN$/i.test(rp) || /normal/i.test(rp)) raidBuckets.Normal++;
     }
 
     const classDistribution = Object.entries(classCounts)
