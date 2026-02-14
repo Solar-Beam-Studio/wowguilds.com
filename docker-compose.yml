@@ -13,6 +13,7 @@ services:
       retries: 3
 
   web:
+    container_name: wowguilds-web
     build:
       context: .
       dockerfile: apps/web/Dockerfile
@@ -24,13 +25,16 @@ services:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
       - ZENHOOK_WEBHOOK_URL=${ZENHOOK_WEBHOOK_URL}
+    networks:
+      - default
+      - web
     depends_on:
       redis:
         condition: service_healthy
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/health"]
-      interval: 30s
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:3000/api/health"]
+      interval: 10s
       timeout: 5s
       retries: 3
 
@@ -52,6 +56,10 @@ services:
         limits:
           memory: 512M
           cpus: "0.5"
+
+networks:
+  web:
+    external: true
 
 volumes:
   redis-data:
