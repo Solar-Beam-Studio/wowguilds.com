@@ -218,7 +218,7 @@ export default async function PublicGuildPage({ params }: Props) {
   return (
     <>
     <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: guildJsonLd }} />
-    <div className="w-full px-8 md:px-16 py-10 md:py-12">
+    <div className="w-full max-w-6xl mx-auto px-6 md:px-8 py-10 md:py-12">
       <div className="mb-10 flex items-center gap-5">
         <GuildCrest
           emblemId={guild.crestEmblemId}

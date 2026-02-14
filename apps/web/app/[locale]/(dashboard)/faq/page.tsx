@@ -57,7 +57,7 @@ export default async function FaqPage({ params }: Props) {
   });
 
   return (
-    <div className="w-full max-w-3xl mx-auto px-8 py-10 md:py-16">
+    <div className="w-full max-w-4xl mx-auto px-6 md:px-8 py-10 md:py-16">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: faqJsonLd }} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: breadcrumbJsonLd }} />
 

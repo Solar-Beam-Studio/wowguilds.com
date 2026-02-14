@@ -62,7 +62,7 @@ export default async function GuidesPage({ params }: Props) {
   );
 
   return (
-    <div className="w-full max-w-4xl mx-auto px-8 py-10 md:py-16 relative">
+    <div className="w-full max-w-4xl mx-auto px-6 md:px-8 py-10 md:py-16 relative">
       <h1 className="text-4xl md:text-5xl font-black tracking-tighter uppercase mb-2">
         {t("title")}
       </h1>

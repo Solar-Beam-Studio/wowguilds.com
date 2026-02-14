@@ -101,7 +101,7 @@ export default async function StatsPage({ params }: Props) {
   });
 
   return (
-    <div className="w-full max-w-5xl mx-auto px-8 py-10 md:py-16">
+    <div className="w-full max-w-6xl mx-auto px-6 md:px-8 py-10 md:py-16">
       {/* All values in jsonLd are computed from our own database, not user input */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
 
