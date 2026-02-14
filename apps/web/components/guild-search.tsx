@@ -264,7 +264,7 @@ export function GuildSearch() {
           <div className="md:hidden h-px w-full bg-white/5" />
 
           {/* Second row on mobile: realm + region + button */}
-          <div className="flex items-center flex-1 min-w-0">
+          <div className="flex items-center md:flex-[1.5] min-w-0">
             {/* Realm input + autocomplete */}
             <div ref={realmRef} className="flex-1 relative min-w-0 px-4 md:px-6">
               <div className="flex items-center gap-2">
