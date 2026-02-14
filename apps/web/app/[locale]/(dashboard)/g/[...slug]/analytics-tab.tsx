@@ -7,7 +7,7 @@ import {
   getItemLevelColor,
   getMythicPlusColor,
   getAchievementColor,
-} from "@wow/database";
+} from "@wow/database/constants";
 import type { GuildMember } from "@/hooks/use-members";
 
 function Bar({
