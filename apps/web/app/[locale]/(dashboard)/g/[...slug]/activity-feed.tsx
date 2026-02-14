@@ -13,7 +13,7 @@ import {
   Clock,
   Loader2,
 } from "lucide-react";
-import { CLASS_COLORS } from "@wow/database";
+import { CLASS_COLORS } from "@wow/database/constants";
 
 interface GuildEvent {
   id: number;
