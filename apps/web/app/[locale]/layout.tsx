@@ -80,7 +80,7 @@ export default async function RootLayout({
         {/* Background image — visible at top, fades to solid at bottom */}
         <div className="fixed inset-0 z-0 pointer-events-none">
           <img src="/hero.webp" alt="" className="absolute inset-0 w-full h-full object-cover object-center" />
-          <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, rgba(11,11,13,0.6) 0%, rgba(11,11,13,0.85) 40%, rgba(11,11,13,1) 70%)" }} />
+          <div className="absolute inset-0" style={{ background: "linear-gradient(to bottom, rgba(11,11,13,0.7) 0%, rgba(11,11,13,0.92) 30%, rgba(11,11,13,1) 50%)" }} />
         </div>
         <NextIntlClientProvider locale={locale} messages={messages}>
           <Providers>

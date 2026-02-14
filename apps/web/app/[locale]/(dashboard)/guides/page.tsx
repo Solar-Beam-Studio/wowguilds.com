@@ -62,7 +62,7 @@ export default async function GuidesPage({ params }: Props) {
   );
 
   return (
-    <div className="w-full max-w-4xl mx-auto px-8 py-10 md:py-16">
+    <div className="w-full max-w-4xl mx-auto px-8 py-10 md:py-16 relative">
       <h1 className="text-4xl md:text-5xl font-black tracking-tighter uppercase mb-2">
         {t("title")}
       </h1>
@@ -84,17 +84,17 @@ export default async function GuidesPage({ params }: Props) {
                   <Link
                     key={guide.slug}
                     href={`/guides/${guide.slug}`}
-                    className="block p-4 rounded-xl border border-white/5 hover:border-white/10 transition-colors"
+                    className="block p-5 rounded-xl bg-white/[0.03] border border-white/[0.06] hover:bg-white/[0.06] hover:border-white/10 transition-all"
                   >
-                    <h3 className="text-white font-bold mb-1">
+                    <h3 className="text-white font-bold mb-1.5">
                       {guide.title}
                     </h3>
                     {guide.metaDescription && (
-                      <p className="text-gray-500 text-sm line-clamp-2">
+                      <p className="text-gray-400 text-sm leading-relaxed line-clamp-2">
                         {guide.metaDescription}
                       </p>
                     )}
-                    <div className="flex items-center gap-3 mt-2 text-xs text-gray-600">
+                    <div className="flex items-center gap-3 mt-3 text-xs text-gray-500">
                       {guide.publishedAt && (
                         <span>
                           {new Date(guide.publishedAt).toLocaleDateString(
@@ -103,7 +103,7 @@ export default async function GuidesPage({ params }: Props) {
                           )}
                         </span>
                       )}
-                      <span>{guide.wordCount} {t("words")}</span>
+                      <span>{Math.ceil((guide.wordCount || 0) / 200)} min read</span>
                     </div>
                   </Link>
                 ))}
