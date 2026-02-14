@@ -228,6 +228,10 @@
     "class": "Class",
     "rating": "Rating",
     "players": "players",
+    "liveData": "Live Network Data",
+    "globalAvgScore": "Global Average Score",
+    "home": "Home",
+    "guides": "Guides",
     "dataNote": "Data updates every 30 minutes from Blizzard API and Raider.IO. Rankings are based on tracked guilds only."
   },
   "guides": {
@@ -252,9 +256,11 @@
     "guildAverages": "Guild Averages",
     "avgIlvl": "Avg iLvl",
     "avgMplus": "Avg M+",
+    "avgPvp": "Avg PvP",
     "avgAchievements": "Avg Achiev",
     "ilvlDistribution": "Item Level Distribution",
     "mplusDistribution": "M+ Score Distribution",
+    "pvpDistribution": "PvP Rating Distribution",
     "raidProgress": "Raid Progress",
     "basedOn": "{count} of {total} members"
   },

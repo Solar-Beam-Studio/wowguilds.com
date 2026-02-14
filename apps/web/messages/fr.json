@@ -228,6 +228,10 @@
     "class": "Classe",
     "rating": "Cote",
     "players": "joueurs",
+    "liveData": "Données en direct",
+    "globalAvgScore": "Score moyen global",
+    "home": "Accueil",
+    "guides": "Guides",
     "dataNote": "Données mises à jour toutes les 30 minutes via l'API Blizzard et Raider.IO. Les classements sont basés sur les guildes suivies uniquement."
   },
   "guides": {
@@ -252,9 +256,11 @@
     "guildAverages": "Moyennes de la Guilde",
     "avgIlvl": "iLvl Moy.",
     "avgMplus": "M+ Moy.",
+    "avgPvp": "PvP Moy.",
     "avgAchievements": "HF Moy.",
     "ilvlDistribution": "Répartition des Niveaux d'Objet",
     "mplusDistribution": "Répartition des Scores M+",
+    "pvpDistribution": "Répartition des Cotes PvP",
     "raidProgress": "Progression Raid",
     "basedOn": "{count} sur {total} membres"
   },

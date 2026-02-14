@@ -3,6 +3,7 @@ import { CLASS_COLORS } from "@wow/database";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import type { Metadata } from "next";
+import { Trophy, Users, Shield, Sword, Activity, TrendingUp, Globe, Zap } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
@@ -22,6 +23,79 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       languages: { en: "/stats", fr: "/fr/stats" },
     },
   };
+}
+
+function KpiCard({
+  label,
+  value,
+  icon: Icon,
+  colorClass = "text-white",
+}: {
+  label: string;
+  value: string | number;
+  icon: any;
+  colorClass?: string;
+}) {
+  return (
+    <div className="glass rounded-3xl p-6 border border-white/5 flex flex-col items-center text-center group hover:border-white/10 transition-all">
+      <div className="w-10 h-10 rounded-2xl bg-white/5 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+        <Icon className="w-5 h-5 text-gray-400" />
+      </div>
+      <p className={`text-3xl font-mono tabular-nums font-bold ${colorClass}`}>{value}</p>
+      <p className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500 mt-2">
+        {label}
+      </p>
+    </div>
+  );
+}
+
+function ClassBar({ 
+  name, 
+  rank, 
+  avgScore, 
+  count, 
+  maxScore, 
+  color, 
+  avgIlvl,
+  playersLabel
+}: { 
+  name: string; 
+  rank: number; 
+  avgScore: number; 
+  count: number; 
+  maxScore: number; 
+  color: string; 
+  avgIlvl: number;
+  playersLabel: string;
+}) {
+  const pct = Math.round((avgScore / maxScore) * 100);
+  
+  return (
+    <div className="group">
+      <div className="flex items-center gap-3 mb-1.5">
+        <span className="text-[10px] font-mono font-bold text-gray-600 w-5 text-right tabular-nums">
+          {rank}
+        </span>
+        <span className="text-[13px] font-bold shrink-0 truncate w-24" style={{ color }}>
+          {name}
+        </span>
+        <div className="flex-1 h-1.5 rounded-full bg-white/5 overflow-hidden">
+          <div
+            className="h-full rounded-full transition-all duration-1000 ease-out"
+            style={{ width: `${pct}%`, backgroundColor: color }}
+          />
+        </div>
+        <span className="text-[13px] font-mono font-bold text-white w-12 text-right tabular-nums">
+          {avgScore}
+        </span>
+      </div>
+      <div className="flex items-center gap-2 pl-32 text-[10px] font-bold uppercase tracking-wider text-gray-600">
+        <span>{avgIlvl} iLvl</span>
+        <span className="opacity-30">•</span>
+        <span>{count} {playersLabel}</span>
+      </div>
+    </div>
+  );
 }
 
 export default async function StatsPage({ params }: Props) {
@@ -82,183 +156,148 @@ export default async function StatsPage({ params }: Props) {
   ]);
 
   const avgIlvl = Math.round((avgStats._avg.itemLevel || 0) * 10) / 10;
-
-  // JSON-LD — all values are computed from our own DB, safe for serialization
-  const jsonLd = JSON.stringify({
-    "@context": "https://schema.org",
-    "@type": "Dataset",
-    name: "World of Warcraft Class Performance Statistics",
-    description: `Live class rankings and player statistics from ${totalMembers} tracked characters across ${totalGuilds} guilds.`,
-    url: "https://wowguilds.com/stats",
-    publisher: { "@type": "Organization", name: "WoW Guilds" },
-    temporalCoverage: new Date().toISOString().split("T")[0],
-    variableMeasured: [
-      "Mythic+ Score",
-      "Item Level",
-      "PvP Rating",
-      "Activity Status",
-    ],
-  });
+  const activePct = totalMembers > 0 ? Math.round((activeMembers / totalMembers) * 100) : 0;
 
   return (
-    <div className="w-full max-w-6xl mx-auto px-6 md:px-8 py-10 md:py-16">
-      {/* All values in jsonLd are computed from our own database, not user input */}
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
-
-      <h1 className="text-4xl md:text-5xl font-black tracking-tighter uppercase mb-2">
-        {t("title")}
-      </h1>
-      <p className="text-gray-500 text-sm font-bold tracking-wide mb-10">
-        {t("description", {
-          members: totalMembers.toLocaleString(),
-          guilds: totalGuilds,
-        })}
-      </p>
-
-      {/* Overview cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
-        {[
-          { label: t("guildsTracked"), value: totalGuilds },
-          { label: t("totalCharacters"), value: totalMembers.toLocaleString() },
-          { label: t("activeCharacters"), value: activeMembers.toLocaleString() },
-          { label: t("avgItemLevel"), value: avgIlvl },
-        ].map((stat) => (
-          <div key={stat.label} className="glass rounded-3xl p-6 border border-white/5">
-            <p className="text-3xl font-mono tabular-nums font-bold">{stat.value}</p>
-            <p className="text-[11px] font-black uppercase tracking-[0.2em] text-gray-500 mt-2">
-              {stat.label}
-            </p>
-          </div>
-        ))}
-      </div>
-
-      {/* Class M+ Rankings */}
-      <section className="glass rounded-3xl p-6 border border-white/5 mb-12">
-        <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-gray-500 mb-6">
-          {t("classMplusRankings")}
-        </h2>
-        <div className="space-y-3">
-          {classStats.map((cls, i) => {
-            const name = cls.characterClass!;
-            const color = CLASS_COLORS[name] || "#888";
-            const avgScore = Math.round(cls._avg.mythicPlusScore || 0);
-            const classAvgIlvl = Math.round((cls._avg.itemLevel || 0) * 10) / 10;
-            const maxScore = classStats[0]?._avg.mythicPlusScore || 1;
-            const pct = Math.round(((cls._avg.mythicPlusScore || 0) / maxScore) * 100);
-
-            return (
-              <div key={name} className="flex items-center gap-3">
-                <span className="text-xs text-gray-600 w-5 text-right font-mono tabular-nums">
-                  {i + 1}
-                </span>
-                <span
-                  className="text-sm font-bold w-24 shrink-0 truncate"
-                  style={{ color }}
-                >
-                  {name}
-                </span>
-                <div className="flex-1 h-2 rounded-full bg-white/5">
-                  <div
-                    className="h-full rounded-full transition-all duration-500"
-                    style={{ width: `${pct}%`, backgroundColor: color }}
-                  />
-                </div>
-                <span className="text-xs font-mono tabular-nums text-gray-400 shrink-0">
-                  {avgScore}
-                </span>
-                <span className="text-xs text-gray-600 shrink-0 hidden sm:inline">
-                  · {classAvgIlvl} ilvl · {cls._count.id} {t("players")}
-                </span>
-              </div>
-            );
-          })}
+    <div className="w-full max-w-6xl mx-auto px-6 md:px-8 py-12 md:py-20 animate-in fade-in duration-1000">
+      <div className="mb-16">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-400 text-[10px] font-black uppercase tracking-widest mb-6">
+          <Activity className="w-3 h-3" />
+          {t("liveData")}
         </div>
-      </section>
-
-      {/* Top Players — side by side */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
-        {/* Top M+ Players */}
-        <section className="glass rounded-3xl p-6 border border-white/5">
-          <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-gray-500 mb-6">
-            {t("topMplus")}
-          </h2>
-          <div className="space-y-3">
-            {topMPlus.slice(0, 10).map((p, i) => (
-              <div key={`${p.characterName}-${p.realm}`} className="flex items-center gap-3">
-                <span
-                  className={`inline-flex items-center justify-center w-7 h-7 rounded-full text-[10px] font-bold border ${
-                    i === 0
-                      ? "bg-violet-500 border-violet-400 text-white"
-                      : "bg-white/5 border-white/10 text-gray-500"
-                  }`}
-                >
-                  {i + 1}
-                </span>
-                <div className="flex-1 min-w-0">
-                  <p
-                    className="text-sm font-bold truncate"
-                    style={{ color: CLASS_COLORS[p.characterClass || ""] || "#888" }}
-                  >
-                    {p.characterName}
-                  </p>
-                  <Link
-                    href={`/g/${p.guild.region}/${p.guild.realm}/${p.guild.name.toLowerCase().replace(/\s+/g, "-")}`}
-                    className="text-[11px] text-gray-500 hover:text-white transition-colors truncate block"
-                  >
-                    {p.guild.name}
-                  </Link>
-                </div>
-                <span className="text-sm font-mono tabular-nums font-bold shrink-0">
-                  {p.mythicPlusScore}
-                </span>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Top Solo Shuffle */}
-        <section className="glass rounded-3xl p-6 border border-white/5">
-          <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-gray-500 mb-6">
-            {t("topSoloShuffle")}
-          </h2>
-          <div className="space-y-3">
-            {topPvp.slice(0, 10).map((p, i) => (
-              <div key={`${p.characterName}-${p.realm}`} className="flex items-center gap-3">
-                <span
-                  className={`inline-flex items-center justify-center w-7 h-7 rounded-full text-[10px] font-bold border ${
-                    i === 0
-                      ? "bg-violet-500 border-violet-400 text-white"
-                      : "bg-white/5 border-white/10 text-gray-500"
-                  }`}
-                >
-                  {i + 1}
-                </span>
-                <div className="flex-1 min-w-0">
-                  <p
-                    className="text-sm font-bold truncate"
-                    style={{ color: CLASS_COLORS[p.characterClass || ""] || "#888" }}
-                  >
-                    {p.characterName}
-                  </p>
-                  <Link
-                    href={`/g/${p.guild.region}/${p.guild.realm}/${p.guild.name.toLowerCase().replace(/\s+/g, "-")}`}
-                    className="text-[11px] text-gray-500 hover:text-white transition-colors truncate block"
-                  >
-                    {p.guild.name}
-                  </Link>
-                </div>
-                <span className="text-sm font-mono tabular-nums font-bold shrink-0">
-                  {p.soloShuffleRating}
-                </span>
-              </div>
-            ))}
-          </div>
-        </section>
+        <h1 className="text-5xl md:text-7xl font-black tracking-tighter uppercase mb-6 leading-[0.9]">
+          {t("title")}
+        </h1>
+        <p className="text-gray-500 text-lg font-medium max-w-2xl">
+          {t("description", {
+            members: totalMembers.toLocaleString(),
+            guilds: totalGuilds,
+          })}
+        </p>
       </div>
 
-      <p className="text-xs text-gray-600">
-        {t("dataNote")}
-      </p>
+      {/* Overview Cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
+        <KpiCard label={t("guildsTracked")} value={totalGuilds} icon={Globe} colorClass="text-blue-400" />
+        <KpiCard label={t("totalCharacters")} value={totalMembers.toLocaleString()} icon={Users} colorClass="text-white" />
+        <KpiCard label={t("activeCharacters")} value={`${activePct}%`} icon={Zap} colorClass="text-green-400" />
+        <KpiCard label={t("avgItemLevel")} value={avgIlvl} icon={Shield} colorClass="text-purple-400" />
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-12 mb-16">
+        {/* Class M+ Rankings */}
+        <section className="lg:col-span-2 glass rounded-[2.5rem] p-8 md:p-10 border border-white/5 relative overflow-hidden">
+          <div className="flex items-center gap-3 mb-8">
+            <div className="w-10 h-10 rounded-2xl bg-violet-500/10 flex items-center justify-center">
+              <TrendingUp className="w-5 h-5 text-violet-400" />
+            </div>
+            <div>
+              <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-white">{t("classMplusRankings")}</h2>
+              <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider mt-0.5">{t("globalAvgScore")}</p>
+            </div>
+          </div>
+          
+          <div className="space-y-6">
+            {classStats.map((cls, i) => {
+              const name = cls.characterClass!;
+              const maxScore = classStats[0]?._avg.mythicPlusScore || 1;
+              return (
+                <ClassBar
+                  key={name}
+                  rank={i + 1}
+                  name={name}
+                  avgScore={Math.round(cls._avg.mythicPlusScore || 0)}
+                  count={cls._count.id}
+                  maxScore={maxScore}
+                  color={CLASS_COLORS[name] || "#888"}
+                  avgIlvl={Math.round((cls._avg.itemLevel || 0) * 10) / 10}
+                  playersLabel={t("players")}
+                />
+              );
+            })}
+          </div>
+
+          <div className="absolute -right-20 -bottom-20 opacity-[0.02] pointer-events-none">
+            <TrendingUp className="w-96 h-96" />
+          </div>
+        </section>
+
+        {/* Hall of Fame / Top Lists */}
+        <div className="space-y-12">
+          {/* Top M+ Players */}
+          <section>
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-8 h-8 rounded-lg bg-orange-500/10 flex items-center justify-center">
+                <Trophy className="w-4 h-4 text-orange-400" />
+              </div>
+              <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-white">{t("topMplus")}</h2>
+            </div>
+            <div className="space-y-4">
+              {topMPlus.slice(0, 5).map((p, i) => (
+                <div key={`${p.characterName}-${p.realm}`} className="flex items-center gap-3 group">
+                  <div className="text-[10px] font-mono font-bold text-gray-700 w-4">{i + 1}</div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-bold truncate" style={{ color: CLASS_COLORS[p.characterClass || ""] || "#888" }}>
+                      {p.characterName}
+                    </p>
+                    <Link
+                      href={`/g/${p.guild.region}/${p.guild.realm}/${p.guild.name.toLowerCase().replace(/\s+/g, "-")}`}
+                      className="text-[10px] font-bold uppercase tracking-wider text-gray-600 hover:text-white transition-colors truncate block mt-0.5"
+                    >
+                      {p.guild.name}
+                    </Link>
+                  </div>
+                  <div className="text-sm font-mono font-black italic tracking-tighter text-white">
+                    {p.mythicPlusScore}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+          {/* Top Solo Shuffle */}
+          <section>
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center">
+                <Sword className="w-4 h-4 text-red-400" />
+              </div>
+              <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-white">{t("topSoloShuffle")}</h2>
+            </div>
+            <div className="space-y-4">
+              {topPvp.slice(0, 5).map((p, i) => (
+                <div key={`${p.characterName}-${p.realm}`} className="flex items-center gap-3 group">
+                  <div className="text-[10px] font-mono font-bold text-gray-700 w-4">{i + 1}</div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-bold truncate" style={{ color: CLASS_COLORS[p.characterClass || ""] || "#888" }}>
+                      {p.characterName}
+                    </p>
+                    <Link
+                      href={`/g/${p.guild.region}/${p.guild.realm}/${p.guild.name.toLowerCase().replace(/\s+/g, "-")}`}
+                      className="text-[10px] font-bold uppercase tracking-wider text-gray-600 hover:text-white transition-colors truncate block mt-0.5"
+                    >
+                      {p.guild.name}
+                    </Link>
+                  </div>
+                  <div className="text-sm font-mono font-black italic tracking-tighter text-white">
+                    {p.soloShuffleRating}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+
+        </div>
+      </div>
+
+      <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <p className="text-[10px] font-bold uppercase tracking-widest text-gray-600 italic">
+          {t("dataNote")}
+        </p>
+        <div className="flex items-center gap-4">
+          <Link href="/" className="text-[10px] font-black uppercase tracking-widest text-gray-500 hover:text-white transition-colors">{t("home")}</Link>
+          <Link href="/guides" className="text-[10px] font-black uppercase tracking-widest text-gray-500 hover:text-white transition-colors">{t("guides")}</Link>
+        </div>
+      </div>
     </div>
   );
 }
