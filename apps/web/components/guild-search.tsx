@@ -4,7 +4,7 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { useRouter } from "@/i18n/navigation";
 import { useTranslations } from "next-intl";
-import { Search, Loader2, Globe, X, History, ArrowRight, ChevronDown } from "lucide-react";
+import { Search, Loader2, X, History, ArrowRight, ChevronDown } from "lucide-react";
 import { guildPath } from "@/lib/guild-url";
 
 interface Realm {
@@ -263,12 +263,11 @@ export function GuildSearch() {
           <div className="hidden md:block w-px h-8 bg-white/5 shrink-0" />
           <div className="md:hidden h-px w-full bg-white/5" />
 
-          {/* Second row on mobile: realm + region + button */}
-          <div className="flex items-center md:flex-[1.5] min-w-0">
+          {/* Second row on mobile — md:contents makes this div invisible to desktop flex */}
+          <div className="flex items-center md:contents min-w-0">
             {/* Realm input + autocomplete */}
             <div ref={realmRef} className="flex-1 relative min-w-0 px-4 md:px-6">
-              <div className="flex items-center gap-2">
-                <Globe className="w-4 h-4 text-gray-500 shrink-0" />
+              <div className="flex items-center">
                 <input
                   type="text"
                   value={realm}
