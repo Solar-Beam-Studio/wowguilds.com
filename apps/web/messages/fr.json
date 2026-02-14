@@ -218,7 +218,12 @@
     "metaTitle": "Guides WoW — Articles et Analyses | WoW Guilds",
     "metaDescription": "Guides approfondis World of Warcraft bases sur les donnees reelles des joueurs. Classements M+, analyses PvP, strategies raid et guides de classes.",
     "noGuides": "Aucun guide publie pour le moment. Revenez bientot !",
-    "words": "mots"
+    "words": "mots",
+    "categoryMPlus": "Mythique+",
+    "categoryPvp": "JcJ",
+    "categoryRaids": "Raids",
+    "categoryGeneral": "General",
+    "categoryClassGuides": "Guides de Classe"
   },
   "sidebar": {
     "navigation": "Navigation",

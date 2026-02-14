@@ -23,12 +23,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-const CATEGORY_LABELS: Record<string, string> = {
-  "m-plus": "Mythic+",
-  pvp: "PvP",
-  raids: "Raids",
-  general: "General",
-  "class-guides": "Class Guides",
+const CATEGORY_KEYS: Record<string, string> = {
+  "m-plus": "categoryMPlus",
+  pvp: "categoryPvp",
+  raids: "categoryRaids",
+  general: "categoryGeneral",
+  "class-guides": "categoryClassGuides",
 };
 
 export default async function GuidesPage({ params }: Props) {
@@ -77,7 +77,7 @@ export default async function GuidesPage({ params }: Props) {
           {Object.entries(grouped).map(([category, catGuides]) => (
             <section key={category}>
               <h2 className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-4">
-                {CATEGORY_LABELS[category] || category}
+                {CATEGORY_KEYS[category] ? t(CATEGORY_KEYS[category]) : category}
               </h2>
               <div className="space-y-4">
                 {catGuides.map((guide) => (
@@ -103,7 +103,7 @@ export default async function GuidesPage({ params }: Props) {
                           )}
                         </span>
                       )}
-                      <span>{guide.wordCount} words</span>
+                      <span>{guide.wordCount} {t("words")}</span>
                     </div>
                   </Link>
                 ))}

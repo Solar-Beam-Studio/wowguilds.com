@@ -36,7 +36,7 @@ export function createGrowthGenerateWorker(
   return new Worker<GenerateJobData>(
     QUEUE_NAMES.GROWTH_GENERATE,
     async (job: Job<GenerateJobData>) => {
-      const {
+      let {
         title,
         targetKeyword,
         category,
@@ -122,11 +122,11 @@ Write the article now.`;
         let metaDescription = `${title} - Data-backed guide from wowguilds.com`;
         let totalCost = articleResult.cost;
 
-        // 4. Generate meta tags (skip for translations — translate parent's meta)
+        // 4. Generate meta tags (for translations — translate title + meta from parent)
         if (isTranslation && parentGuideId) {
           const parent = await prisma.guide.findUnique({
             where: { id: parentGuideId },
-            select: { metaTitle: true, metaDescription: true },
+            select: { title: true, metaTitle: true, metaDescription: true },
           });
           if (parent?.metaTitle) {
             const metaResult = await openRouter.complete(
@@ -134,11 +134,12 @@ Write the article now.`;
                 {
                   role: "system",
                   content:
-                    "Translate these SEO meta tags to French. Return JSON: {\"metaTitle\": \"...\", \"metaDescription\": \"...\"}",
+                    "Translate this article title and SEO meta tags to French. Return JSON: {\"title\": \"...\", \"metaTitle\": \"...\", \"metaDescription\": \"...\"}",
                 },
                 {
                   role: "user",
                   content: JSON.stringify({
+                    title: parent.title,
                     metaTitle: parent.metaTitle,
                     metaDescription: parent.metaDescription,
                   }),
@@ -149,6 +150,7 @@ Write the article now.`;
             totalCost += metaResult.cost;
             try {
               const meta = JSON.parse(metaResult.content);
+              title = meta.title?.slice(0, 120) || title;
               metaTitle = meta.metaTitle?.slice(0, 60) || metaTitle;
               metaDescription = meta.metaDescription?.slice(0, 160) || metaDescription;
             } catch { /* use defaults */ }

@@ -218,7 +218,12 @@
     "metaTitle": "WoW Guides — Data-Backed Articles & Analysis | WoW Guilds",
     "metaDescription": "In-depth World of Warcraft guides backed by real player data. Mythic+ rankings, PvP analysis, raid strategies, and class guides.",
     "noGuides": "No guides published yet. Check back soon!",
-    "words": "words"
+    "words": "words",
+    "categoryMPlus": "Mythic+",
+    "categoryPvp": "PvP",
+    "categoryRaids": "Raids",
+    "categoryGeneral": "General",
+    "categoryClassGuides": "Class Guides"
   },
   "sidebar": {
     "navigation": "Navigation",
