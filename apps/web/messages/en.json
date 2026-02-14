@@ -193,6 +193,14 @@
     "q8": "Is it free?",
     "a8": "Yes, completely free. No ads, no paywalls, no premium tiers."
   },
+  "guides": {
+    "title": "Guides",
+    "description": "Data-backed World of Warcraft guides and analysis",
+    "metaTitle": "WoW Guides — Data-Backed Articles & Analysis | WoW Guilds",
+    "metaDescription": "In-depth World of Warcraft guides backed by real player data. Mythic+ rankings, PvP analysis, raid strategies, and class guides.",
+    "noGuides": "No guides published yet. Check back soon!",
+    "words": "words"
+  },
   "sidebar": {
     "navigation": "Navigation",
     "explore": "Explore",

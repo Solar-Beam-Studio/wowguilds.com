@@ -203,3 +203,72 @@ model SyncLog {
   @@index([guildId])
   @@map("sync_logs")
 }
+
+// ============================================================================
+// Growth / SEO content models
+// ============================================================================
+
+model Guide {
+  id               String    @id @default(cuid())
+  slug             String
+  locale           String    @default("en") // en | fr
+  status           String    @default("draft") // draft | published | retired | rewriting
+  title            String
+  metaTitle        String?
+  metaDescription  String?
+  content          String    @db.Text
+  category         String // m-plus | pvp | raids | general | class-guides
+  tags             String[] // ["mythic-plus", "season-1", ...]
+  targetKeyword    String?
+  relatedSlugs     String[]
+  wordCount        Int       @default(0)
+  dataSnapshot     Json? // real stats used in the article
+  aiModel          String?
+  aiCost           Float     @default(0)
+  pageViews        Int       @default(0)
+  bounceRate       Float     @default(0)
+  qualityScore     Float     @default(0)
+  publishedAt      DateTime?
+  parentGuideId    String? // for translations — points to the "en" version
+  contentPlanId    String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  parentGuide Guide?  @relation("GuideTranslations", fields: [parentGuideId], references: [id], onDelete: SetNull)
+  translations Guide[] @relation("GuideTranslations")
+  contentPlan ContentPlan? @relation(fields: [contentPlanId], references: [id], onDelete: SetNull)
+
+  @@unique([slug, locale])
+  @@index([status, locale])
+  @@index([category])
+  @@index([contentPlanId])
+  @@map("guides")
+}
+
+model ContentPlan {
+  id              String   @id @default(cuid())
+  weekOf          DateTime @unique
+  status          String   @default("pending") // pending | in_progress | completed
+  strategy        String   @db.Text // JSON string of the AI plan
+  totalBudgetUsed Float    @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  guides Guide[]
+
+  @@map("content_plans")
+}
+
+model GrowthLog {
+  id        String   @id @default(cuid())
+  type      String // strategy | generation | review | analytics
+  status    String // success | error | skipped
+  message   String?
+  metadata  Json?
+  cost      Float    @default(0)
+  duration  Int      @default(0) // seconds
+  createdAt DateTime @default(now())
+
+  @@index([type, createdAt])
+  @@map("growth_logs")
+}

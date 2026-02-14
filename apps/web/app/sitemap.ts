@@ -46,5 +46,39 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     };
   });
 
-  return [...staticEntries, ...guildEntries];
+  const guides = await prisma.guide.findMany({
+    where: { status: "published", locale: "en" },
+    select: { slug: true, updatedAt: true },
+  });
+
+  const guideEntries: MetadataRoute.Sitemap = [
+    // Guides index
+    {
+      url: `${BASE_URL}/guides`,
+      lastModified: now,
+      changeFrequency: "weekly",
+      priority: 0.6,
+      alternates: {
+        languages: {
+          en: `${BASE_URL}/guides`,
+          fr: `${BASE_URL}/fr/guides`,
+        },
+      },
+    },
+    // Individual guides
+    ...guides.map((guide) => ({
+      url: `${BASE_URL}/guides/${guide.slug}`,
+      lastModified: guide.updatedAt,
+      changeFrequency: "weekly" as const,
+      priority: 0.7,
+      alternates: {
+        languages: {
+          en: `${BASE_URL}/guides/${guide.slug}`,
+          fr: `${BASE_URL}/fr/guides/${guide.slug}`,
+        },
+      },
+    })),
+  ];
+
+  return [...staticEntries, ...guildEntries, ...guideEntries];
 }

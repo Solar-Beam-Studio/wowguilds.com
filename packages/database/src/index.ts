@@ -9,6 +9,9 @@ export type {
   SyncJob,
   SyncError,
   SyncLog,
+  Guide,
+  ContentPlan,
+  GrowthLog,
 } from "@prisma/client";
 export { Prisma } from "@prisma/client";
 export * from "./wow-constants";

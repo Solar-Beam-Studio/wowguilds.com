@@ -3,10 +3,16 @@ import { getRedisConnection, createQueues } from "./queues";
 import { BlizzardTokenService } from "./services/blizzard-token.service";
 import { ExternalApiService } from "./services/external-api.service";
 import { EventPublisher } from "./services/event-publisher.service";
+import { OpenRouterService } from "./services/openrouter.service";
+import { PirschService } from "./services/pirsch.service";
+import { DataAggregationService } from "./services/data-aggregation.service";
 import { createGuildDiscoveryWorker } from "./workers/guild-discovery.worker";
 import { createCharacterSyncWorker } from "./workers/character-sync.worker";
 import { createActivityCheckWorker } from "./workers/activity-check.worker";
 import { createSyncSchedulerWorker } from "./workers/sync-scheduler.worker";
+import { createGrowthStrategyWorker } from "./workers/growth-strategy.worker";
+import { createGrowthGenerateWorker } from "./workers/growth-generate.worker";
+import { createGrowthReviewWorker } from "./workers/growth-review.worker";
 import { prisma, sendAlert } from "@wow/database";
 
 async function main() {
@@ -20,6 +26,9 @@ async function main() {
   const tokenService = new BlizzardTokenService(redis);
   const externalApi = new ExternalApiService(tokenService);
   const eventPublisher = new EventPublisher(redis);
+  const openRouter = new OpenRouterService(redis);
+  const pirschService = new PirschService(redis);
+  const dataAgg = new DataAggregationService();
 
   const queues = createQueues(connection);
 
@@ -28,6 +37,9 @@ async function main() {
     createCharacterSyncWorker(connection, externalApi, eventPublisher),
     createActivityCheckWorker(connection, externalApi, eventPublisher),
     createSyncSchedulerWorker(connection, eventPublisher),
+    createGrowthStrategyWorker(connection, openRouter, pirschService, dataAgg),
+    createGrowthGenerateWorker(connection, openRouter, dataAgg),
+    createGrowthReviewWorker(connection, openRouter),
   ];
 
   console.log(`[Worker] ${workers.length} workers started`);
@@ -50,7 +62,21 @@ async function main() {
     );
   }
 
-  console.log(`[Worker] Registered jobs for ${guilds.length} guilds`);
+  // Register growth agent scheduled jobs
+  await queues.growthStrategy.upsertJobScheduler(
+    "growth:weekly-strategy",
+    { pattern: "0 6 * * 1" }, // Monday 06:00 UTC
+    { name: "growth:weekly-strategy", data: {} }
+  );
+
+  // Weekly analytics update (Thursday 06:00 UTC)
+  await queues.growthStrategy.upsertJobScheduler(
+    "growth:weekly-analytics",
+    { pattern: "0 6 * * 4" },
+    { name: "growth:weekly-analytics", data: { analyticsOnly: true } }
+  );
+
+  console.log(`[Worker] Registered jobs for ${guilds.length} guilds + growth agent`);
 
   const shutdown = async () => {
     console.log("[Worker] Shutting down...");

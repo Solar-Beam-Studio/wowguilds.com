@@ -193,6 +193,14 @@
     "q8": "Est-ce gratuit ?",
     "a8": "Oui, entierement gratuit. Pas de pubs, pas de paywall, pas de tier premium."
   },
+  "guides": {
+    "title": "Guides",
+    "description": "Guides World of Warcraft bases sur des donnees reelles",
+    "metaTitle": "Guides WoW — Articles et Analyses | WoW Guilds",
+    "metaDescription": "Guides approfondis World of Warcraft bases sur les donnees reelles des joueurs. Classements M+, analyses PvP, strategies raid et guides de classes.",
+    "noGuides": "Aucun guide publie pour le moment. Revenez bientot !",
+    "words": "mots"
+  },
   "sidebar": {
     "navigation": "Navigation",
     "explore": "Explorer",

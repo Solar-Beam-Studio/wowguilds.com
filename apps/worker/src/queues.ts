@@ -6,6 +6,9 @@ export const QUEUE_NAMES = {
   CHARACTER_SYNC: "character-sync",
   ACTIVITY_CHECK: "activity-check",
   SYNC_SCHEDULER: "sync-scheduler",
+  GROWTH_STRATEGY: "growth-strategy",
+  GROWTH_GENERATE: "growth-generate",
+  GROWTH_REVIEW: "growth-review",
 } as const;
 
 export function getRedisConnection(): ConnectionOptions {
@@ -23,5 +26,8 @@ export function createQueues(connection: ConnectionOptions) {
     characterSync: new Queue(QUEUE_NAMES.CHARACTER_SYNC, { connection }),
     activityCheck: new Queue(QUEUE_NAMES.ACTIVITY_CHECK, { connection }),
     syncScheduler: new Queue(QUEUE_NAMES.SYNC_SCHEDULER, { connection }),
+    growthStrategy: new Queue(QUEUE_NAMES.GROWTH_STRATEGY, { connection }),
+    growthGenerate: new Queue(QUEUE_NAMES.GROWTH_GENERATE, { connection }),
+    growthReview: new Queue(QUEUE_NAMES.GROWTH_REVIEW, { connection }),
   };
 }
