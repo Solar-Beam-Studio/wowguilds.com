@@ -25,22 +25,6 @@ export function Footer() {
           >
             FAQ
           </Link>
-          <a
-            href="https://worldofwarcraft.blizzard.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-white transition-colors"
-          >
-            Blizzard
-          </a>
-          <a
-            href="https://raider.io"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-white transition-colors"
-          >
-            Raider.IO
-          </a>
           <span className="text-gray-700">
             {t("notAffiliated")}
           </span>
