@@ -57,7 +57,7 @@ export function AnalyticsTab({ members }: { members: GuildMember[] }) {
     let inactiveCount = 0;
 
     // Only count members with actual data (exclude zeros)
-    const ilvlBuckets = { "650+": 0, "620-649": 0, "590-619": 0, "560-589": 0, "<560": 0 };
+    const ilvlBuckets = { "650+": 0, "620-649": 0, "590-619": 0, "560-589": 0 };
     const mplusBuckets = { "3000+": 0, "2500-2999": 0, "2000-2499": 0, "1500-1999": 0, "1-1499": 0 };
     const raidBuckets = { Mythic: 0, Heroic: 0, Normal: 0 };
 
@@ -69,12 +69,12 @@ export function AnalyticsTab({ members }: { members: GuildMember[] }) {
       if (m.itemLevel && m.itemLevel > 0) {
         totalIlvl += m.itemLevel;
         ilvlCount++;
-
+      }
+      if (m.itemLevel && m.itemLevel >= 560) {
         if (m.itemLevel >= 650) ilvlBuckets["650+"]++;
         else if (m.itemLevel >= 620) ilvlBuckets["620-649"]++;
         else if (m.itemLevel >= 590) ilvlBuckets["590-619"]++;
-        else if (m.itemLevel >= 560) ilvlBuckets["560-589"]++;
-        else ilvlBuckets["<560"]++;
+        else ilvlBuckets["560-589"]++;
       }
 
       if (m.mythicPlusScore && m.mythicPlusScore > 0) {
@@ -111,6 +111,7 @@ export function AnalyticsTab({ members }: { members: GuildMember[] }) {
     const avgAchiev = achievCount > 0 ? Math.round(totalAchiev / achievCount) : 0;
 
     const raidCount = raidBuckets.Mythic + raidBuckets.Heroic + raidBuckets.Normal;
+    const ilvlEndgameCount = Object.values(ilvlBuckets).reduce((a, b) => a + b, 0);
 
     return {
       classDistribution,
@@ -124,6 +125,7 @@ export function AnalyticsTab({ members }: { members: GuildMember[] }) {
       mplusBuckets,
       raidBuckets,
       ilvlCount,
+      ilvlEndgameCount,
       mplusCount,
       raidCount,
       maxIlvlBucket: Math.max(...Object.values(ilvlBuckets)),
@@ -140,7 +142,6 @@ export function AnalyticsTab({ members }: { members: GuildMember[] }) {
     "620-649": "#60a5fa",
     "590-619": "#4ade80",
     "560-589": "#facc15",
-    "<560": "#6b7280",
   };
 
   const mplusColors: Record<string, string> = {
@@ -250,7 +251,7 @@ export function AnalyticsTab({ members }: { members: GuildMember[] }) {
             ))}
           </div>
           <p className="text-[11px] text-gray-600 mt-3">
-            {t("basedOn", { count: stats.ilvlCount, total })}
+            {t("basedOn", { count: stats.ilvlEndgameCount, total })}
           </p>
         </div>
 
