@@ -355,7 +355,7 @@ export function GuildSearch() {
               {mounted && realmOpen && realmFiltered.length > 0 && createPortal(
                 <div
                   ref={realmDropdownRef}
-                  className="fixed z-[9999] bg-[#0b0b0d] border border-white/10 rounded-3xl shadow-2xl overflow-hidden p-2 transition-all duration-200 ease-out"
+                  className="fixed z-[9999] bg-[#0b0b0d] border border-white/10 rounded-3xl shadow-2xl overflow-hidden p-2"
                   style={{ top: realmMenuPos.top, left: realmMenuPos.left, width: realmMenuPos.width }}
                 >
                   <div className="max-h-64 overflow-y-auto space-y-1">
@@ -402,7 +402,7 @@ export function GuildSearch() {
 
               {mounted && regionOpen && createPortal(
                 <div
-                  className="fixed z-[9999] w-40 bg-[#0b0b0d] border border-white/10 rounded-2xl shadow-2xl p-1.5 overflow-hidden animate-in fade-in zoom-in-95 duration-150"
+                  className="fixed z-[9999] w-40 bg-[#0b0b0d] border border-white/10 rounded-2xl shadow-2xl p-1.5 overflow-hidden"
                   style={{ top: regionMenuPos.top, left: regionMenuPos.left }}
                 >
                   <div className="px-3 py-2 text-[9px] font-black uppercase tracking-[0.2em] text-gray-500 border-b border-white/5 mb-1">
@@ -459,7 +459,7 @@ export function GuildSearch() {
       {mounted && suggestionsOpen && (suggestions.length > 0 || (recentSearches.length > 0 && !guildName)) && createPortal(
         <div
           ref={suggestionsDropdownRef}
-          className="fixed z-[9999] bg-[#0b0b0d] border border-white/10 rounded-3xl shadow-2xl overflow-hidden transition-all duration-200 ease-out"
+          className="fixed z-[9999] bg-[#0b0b0d] border border-white/10 rounded-3xl shadow-2xl overflow-hidden"
           style={{ top: suggestionsMenuPos.top, left: suggestionsMenuPos.left, width: suggestionsMenuPos.width }}
         >
           {!guildName && (

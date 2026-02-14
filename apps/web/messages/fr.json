@@ -23,7 +23,7 @@
   "home": {
     "heading": "Recherche de Guilde",
     "tagline": "Chaque membre. Chaque stat. Un seul tableau.",
-    "subtitle": "Cherchez n'importe quelle guilde et voyez instantanément les niveaux d'objet, scores M+, cotes PvP, progression raid, et qui a arrêté de jouer.",
+    "subtitle": "Cherchez n'importe quelle guilde et voyez instantanément les niveaux d'objet, scores M+, cotes PvP, progression raid et activité en temps réel.",
     "searchPlaceholder": "Rechercher guildes, personnages ou royaumes...",
     "liveDataStream": "Flux en Direct",
     "heroTitle": "Le Moteur de Sync pour les Guildes Modernes.",
