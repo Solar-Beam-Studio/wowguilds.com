@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useEffect } from "react";
 import { useTranslations, useLocale } from "next-intl";
-import { Search } from "lucide-react";
+import { Search, Loader2 } from "lucide-react";
 import { MemberTable } from "@/components/member-table";
 import { LeaderboardGrid } from "@/components/leaderboard-grid";
 import { buildCategories } from "@/lib/leaderboard";
@@ -87,9 +87,16 @@ export function PublicGuildClient({
         </button>
       </div>
 
-      {tab === "leaderboard" && <LeaderboardGrid categories={categories} />}
+      {members.length === 0 && (
+        <div className="flex flex-col items-center justify-center py-20 text-center">
+          <Loader2 className="w-8 h-8 text-violet-500 animate-spin mb-4" />
+          <p className="text-sm font-bold text-gray-400">{t("firstSync")}</p>
+        </div>
+      )}
 
-      {tab === "roster" && (
+      {members.length > 0 && tab === "leaderboard" && <LeaderboardGrid categories={categories} />}
+
+      {members.length > 0 && tab === "roster" && (
         <div>
           <div className="mb-5 relative max-w-sm">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" />
@@ -105,7 +112,7 @@ export function PublicGuildClient({
         </div>
       )}
 
-      {tab === "activity" && <ActivityFeed guildId={guildId} />}
+      {members.length > 0 && tab === "activity" && <ActivityFeed guildId={guildId} />}
     </div>
   );
 }
