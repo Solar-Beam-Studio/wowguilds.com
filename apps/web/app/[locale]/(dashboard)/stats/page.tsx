@@ -53,7 +53,7 @@ export default async function StatsPage({ params }: Props) {
     prisma.guildMember.findMany({
       where: { mythicPlusScore: { gt: 0 } },
       orderBy: { mythicPlusScore: "desc" },
-      take: 20,
+      take: 10,
       select: {
         characterName: true,
         realm: true,
@@ -66,7 +66,7 @@ export default async function StatsPage({ params }: Props) {
     prisma.guildMember.findMany({
       where: { soloShuffleRating: { gt: 0 } },
       orderBy: { soloShuffleRating: "desc" },
-      take: 20,
+      take: 10,
       select: {
         characterName: true,
         realm: true,
@@ -123,21 +123,21 @@ export default async function StatsPage({ params }: Props) {
           { label: t("activeCharacters"), value: activeMembers.toLocaleString() },
           { label: t("avgItemLevel"), value: avgIlvl },
         ].map((stat) => (
-          <div key={stat.label} className="p-4 rounded-xl border border-white/5">
-            <p className="text-2xl font-black">{stat.value}</p>
-            <p className="text-xs text-gray-500 font-bold uppercase tracking-wider mt-1">
+          <div key={stat.label} className="glass rounded-3xl p-6 border border-white/5">
+            <p className="text-3xl font-mono tabular-nums font-bold">{stat.value}</p>
+            <p className="text-[11px] font-black uppercase tracking-[0.2em] text-gray-500 mt-2">
               {stat.label}
             </p>
           </div>
         ))}
       </div>
 
-      {/* Class M+ Tier List */}
-      <section className="mb-12">
-        <h2 className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-4">
+      {/* Class M+ Rankings */}
+      <section className="glass rounded-3xl p-6 border border-white/5 mb-12">
+        <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-gray-500 mb-6">
           {t("classMplusRankings")}
         </h2>
-        <div className="space-y-2">
+        <div className="space-y-3">
           {classStats.map((cls, i) => {
             const name = cls.characterClass!;
             const color = CLASS_COLORS[name] || "#888";
@@ -148,125 +148,115 @@ export default async function StatsPage({ params }: Props) {
 
             return (
               <div key={name} className="flex items-center gap-3">
-                <span className="text-xs text-gray-600 w-5 text-right font-mono">
+                <span className="text-xs text-gray-600 w-5 text-right font-mono tabular-nums">
                   {i + 1}
                 </span>
                 <span
-                  className="text-sm font-bold w-28 truncate"
+                  className="text-sm font-bold w-24 shrink-0 truncate"
                   style={{ color }}
                 >
                   {name}
                 </span>
-                <div className="flex-1 h-6 bg-white/5 rounded-lg overflow-hidden relative">
+                <div className="flex-1 h-2 rounded-full bg-white/5">
                   <div
-                    className="h-full rounded-lg opacity-30"
+                    className="h-full rounded-full transition-all duration-500"
                     style={{ width: `${pct}%`, backgroundColor: color }}
                   />
-                  <span className="absolute inset-0 flex items-center px-3 text-xs font-bold text-white">
-                    {avgScore} M+ · {classAvgIlvl} ilvl · {cls._count.id} {t("players")}
-                  </span>
                 </div>
+                <span className="text-xs font-mono tabular-nums text-gray-400 shrink-0">
+                  {avgScore}
+                </span>
+                <span className="text-xs text-gray-600 shrink-0 hidden sm:inline">
+                  · {classAvgIlvl} ilvl · {cls._count.id} {t("players")}
+                </span>
               </div>
             );
           })}
         </div>
       </section>
 
-      {/* Top M+ Players */}
-      <section className="mb-12">
-        <h2 className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-4">
-          {t("topMplus")}
-        </h2>
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>{t("character")}</th>
-                <th>{t("guild")}</th>
-                <th>{t("class")}</th>
-                <th className="text-right">M+</th>
-                <th className="text-right">iLvl</th>
-              </tr>
-            </thead>
-            <tbody>
-              {topMPlus.map((p, i) => (
-                <tr key={`${p.characterName}-${p.realm}`}>
-                  <td className="text-gray-600 font-mono text-xs">{i + 1}</td>
-                  <td className="font-bold">{p.characterName}</td>
-                  <td>
-                    <Link
-                      href={`/g/${p.guild.region}/${p.guild.realm}/${p.guild.name.toLowerCase().replace(/\s+/g, "-")}`}
-                      className="text-gray-400 hover:text-white transition-colors"
-                    >
-                      {p.guild.name}
-                    </Link>
-                  </td>
-                  <td
-                    className="text-sm"
+      {/* Top Players — side by side */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
+        {/* Top M+ Players */}
+        <section className="glass rounded-3xl p-6 border border-white/5">
+          <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-gray-500 mb-6">
+            {t("topMplus")}
+          </h2>
+          <div className="space-y-3">
+            {topMPlus.slice(0, 10).map((p, i) => (
+              <div key={`${p.characterName}-${p.realm}`} className="flex items-center gap-3">
+                <span
+                  className={`inline-flex items-center justify-center w-7 h-7 rounded-full text-[10px] font-bold border ${
+                    i === 0
+                      ? "bg-violet-500 border-violet-400 text-white"
+                      : "bg-white/5 border-white/10 text-gray-500"
+                  }`}
+                >
+                  {i + 1}
+                </span>
+                <div className="flex-1 min-w-0">
+                  <p
+                    className="text-sm font-bold truncate"
                     style={{ color: CLASS_COLORS[p.characterClass || ""] || "#888" }}
                   >
-                    {p.characterClass}
-                  </td>
-                  <td className="text-right font-mono font-bold">
-                    {p.mythicPlusScore}
-                  </td>
-                  <td className="text-right font-mono text-gray-400">
-                    {p.itemLevel}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
+                    {p.characterName}
+                  </p>
+                  <Link
+                    href={`/g/${p.guild.region}/${p.guild.realm}/${p.guild.name.toLowerCase().replace(/\s+/g, "-")}`}
+                    className="text-[11px] text-gray-500 hover:text-white transition-colors truncate block"
+                  >
+                    {p.guild.name}
+                  </Link>
+                </div>
+                <span className="text-sm font-mono tabular-nums font-bold shrink-0">
+                  {p.mythicPlusScore}
+                </span>
+              </div>
+            ))}
+          </div>
+        </section>
 
-      {/* Top PvP (Solo Shuffle) */}
-      <section className="mb-12">
-        <h2 className="text-xs font-bold uppercase tracking-widest text-gray-500 mb-4">
-          {t("topSoloShuffle")}
-        </h2>
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>{t("character")}</th>
-                <th>{t("guild")}</th>
-                <th>{t("class")}</th>
-                <th className="text-right">{t("rating")}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {topPvp.map((p, i) => (
-                <tr key={`${p.characterName}-${p.realm}`}>
-                  <td className="text-gray-600 font-mono text-xs">{i + 1}</td>
-                  <td className="font-bold">{p.characterName}</td>
-                  <td>
-                    <Link
-                      href={`/g/${p.guild.region}/${p.guild.realm}/${p.guild.name.toLowerCase().replace(/\s+/g, "-")}`}
-                      className="text-gray-400 hover:text-white transition-colors"
-                    >
-                      {p.guild.name}
-                    </Link>
-                  </td>
-                  <td
-                    className="text-sm"
+        {/* Top Solo Shuffle */}
+        <section className="glass rounded-3xl p-6 border border-white/5">
+          <h2 className="text-[11px] font-black uppercase tracking-[0.2em] text-gray-500 mb-6">
+            {t("topSoloShuffle")}
+          </h2>
+          <div className="space-y-3">
+            {topPvp.slice(0, 10).map((p, i) => (
+              <div key={`${p.characterName}-${p.realm}`} className="flex items-center gap-3">
+                <span
+                  className={`inline-flex items-center justify-center w-7 h-7 rounded-full text-[10px] font-bold border ${
+                    i === 0
+                      ? "bg-violet-500 border-violet-400 text-white"
+                      : "bg-white/5 border-white/10 text-gray-500"
+                  }`}
+                >
+                  {i + 1}
+                </span>
+                <div className="flex-1 min-w-0">
+                  <p
+                    className="text-sm font-bold truncate"
                     style={{ color: CLASS_COLORS[p.characterClass || ""] || "#888" }}
                   >
-                    {p.characterClass}
-                  </td>
-                  <td className="text-right font-mono font-bold">
-                    {p.soloShuffleRating}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
+                    {p.characterName}
+                  </p>
+                  <Link
+                    href={`/g/${p.guild.region}/${p.guild.realm}/${p.guild.name.toLowerCase().replace(/\s+/g, "-")}`}
+                    className="text-[11px] text-gray-500 hover:text-white transition-colors truncate block"
+                  >
+                    {p.guild.name}
+                  </Link>
+                </div>
+                <span className="text-sm font-mono tabular-nums font-bold shrink-0">
+                  {p.soloShuffleRating}
+                </span>
+              </div>
+            ))}
+          </div>
+        </section>
+      </div>
 
-      <p className="text-xs text-gray-600 mt-8">
+      <p className="text-xs text-gray-600">
         {t("dataNote")}
       </p>
     </div>
