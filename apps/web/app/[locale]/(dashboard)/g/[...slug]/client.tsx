@@ -7,15 +7,17 @@ import { MemberTable } from "@/components/member-table";
 import { LeaderboardGrid } from "@/components/leaderboard-grid";
 import { buildCategories } from "@/lib/leaderboard";
 import { ActivityFeed } from "./activity-feed";
+import { AnalyticsTab } from "./analytics-tab";
 import type { GuildMember } from "@/hooks/use-members";
 
-type Tab = "leaderboard" | "roster" | "activity";
+type Tab = "leaderboard" | "roster" | "activity" | "analytics";
 
 function getTabFromHash(): Tab {
   if (typeof window === "undefined") return "leaderboard";
   const hash = window.location.hash;
   if (hash === "#roster") return "roster";
   if (hash === "#activity") return "activity";
+  if (hash === "#analytics") return "analytics";
   return "leaderboard";
 }
 
@@ -85,6 +87,16 @@ export function PublicGuildClient({
         >
           {t("tabActivity")}
         </button>
+        <button
+          onClick={() => switchTab("analytics")}
+          className={`pb-4 text-sm uppercase transition-colors ${
+            tab === "analytics"
+              ? "font-black tracking-[0.2em] border-b-2 border-violet-500 text-white"
+              : "font-bold tracking-wider text-gray-600 hover:text-gray-300"
+          }`}
+        >
+          {t("tabAnalytics")}
+        </button>
       </div>
 
       {members.length === 0 && (
@@ -113,6 +125,8 @@ export function PublicGuildClient({
       )}
 
       {members.length > 0 && tab === "activity" && <ActivityFeed guildId={guildId} />}
+
+      {members.length > 0 && tab === "analytics" && <AnalyticsTab members={members} />}
     </div>
   );
 }

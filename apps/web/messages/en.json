@@ -118,6 +118,7 @@
     "tabLeaderboard": "Leaderboard",
     "tabRoster": "Roster",
     "tabActivity": "Activity",
+    "tabAnalytics": "Analytics",
     "updatedAgo": "Updated {time}",
     "syncing": "Syncing...",
     "firstSync": "First sync in progress...",
@@ -241,6 +242,21 @@
     "categoryRaids": "Raids",
     "categoryGeneral": "General",
     "categoryClassGuides": "Class Guides"
+  },
+  "analytics": {
+    "classDistribution": "Class Distribution",
+    "activityStatus": "Activity Status",
+    "active": "Active",
+    "inactive": "Inactive",
+    "activeRate": "Active Rate",
+    "guildAverages": "Guild Averages",
+    "avgIlvl": "Avg iLvl",
+    "avgMplus": "Avg M+",
+    "avgAchievements": "Avg Achiev",
+    "ilvlDistribution": "Item Level Distribution",
+    "mplusDistribution": "M+ Score Distribution",
+    "raidProgress": "Raid Progress",
+    "none": "None"
   },
   "sidebar": {
     "navigation": "Navigation",

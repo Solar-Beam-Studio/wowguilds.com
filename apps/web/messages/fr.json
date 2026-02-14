@@ -118,6 +118,7 @@
     "tabLeaderboard": "Classement",
     "tabRoster": "Effectif",
     "tabActivity": "Activité",
+    "tabAnalytics": "Analytiques",
     "updatedAgo": "Mis à jour {time}",
     "syncing": "Synchronisation...",
     "firstSync": "Première synchronisation en cours...",
@@ -241,6 +242,21 @@
     "categoryRaids": "Raids",
     "categoryGeneral": "Général",
     "categoryClassGuides": "Guides de Classe"
+  },
+  "analytics": {
+    "classDistribution": "Répartition des Classes",
+    "activityStatus": "Statut d'Activité",
+    "active": "Actifs",
+    "inactive": "Inactifs",
+    "activeRate": "Taux d'activité",
+    "guildAverages": "Moyennes de la Guilde",
+    "avgIlvl": "iLvl Moy.",
+    "avgMplus": "M+ Moy.",
+    "avgAchievements": "HF Moy.",
+    "ilvlDistribution": "Répartition des Niveaux d'Objet",
+    "mplusDistribution": "Répartition des Scores M+",
+    "raidProgress": "Progression Raid",
+    "none": "Aucun"
   },
   "sidebar": {
     "navigation": "Navigation",
